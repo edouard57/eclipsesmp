@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eclipse SMP</title>
+<meta name="description" content="Eclipse SMP -- serveur Minecraft survie prive, Fabric 26.2. Launcher dedie pour Windows, macOS et Linux.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo-32.png">
+<link rel="apple-touch-icon" href="/assets/logo-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="nav-brand" href="#top">
+    <img src="/assets/logo-32.png" alt="">
+    Eclipse SMP
+  </a>
+  <div class="nav-links">
+    <a href="#rejoindre">Rejoindre</a>
+    <a href="#telecharger">Telecharger</a>
+    <a href="#mods">Les mods</a>
+  </div>
+  <a class="btn-discord-nav" href="https://discord.gg/xZBHEWTbD5" target="_blank" rel="noopener">Discord</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="corona-glow" aria-hidden="true"></div>
+  <div class="corona" aria-hidden="true"></div>
+  <span class="eyebrow">Serveur prive &middot; sur invitation</span>
+  <h1>Eclipse SMP</h1>
+  <p class="hero-sub">Une survie vanilla entre amis, tournant sur Fabric 26.2 avec un pack d'optimisation et de confort. Pas de contenu ajoute, pas de triche &mdash; juste le jeu, en mieux.</p>
+
+  <div class="ip-chip">
+    <code id="server-ip">smp.cubi-mc.fr:25565</code>
+    <button id="copy-btn" type="button" aria-label="Copier l'adresse du serveur">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copy-label">copier</span>
+    </button>
+  </div>
+
+  <div class="hero-ctas">
+    <a class="btn-primary" href="https://discord.gg/xZBHEWTbD5" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="35.34 34.3575 70.68 68.71500" fill="currentColor"><path d="M81.23,78.48a6.14,6.14,0,1,1,6.14-6.14,6.14,6.14,0,0,1-6.14,6.14M60,78.48a6.14,6.14,0,1,1,6.14-6.14A6.14,6.14,0,0,1,60,78.48M104.41,73c-.92-7.7-8.24-22.9-8.24-22.9A43,43,0,0,0,88,45.59a17.88,17.88,0,0,0-8.38-1.27l-.13,1.06a23.52,23.52,0,0,1,5.8,1.95,87.59,87.59,0,0,1,8.17,4.87s-10.32-5.63-22.27-5.63a51.32,51.32,0,0,0-23.2,5.63,87.84,87.84,0,0,1,8.17-4.87,23.57,23.57,0,0,1,5.8-1.95l-.13-1.06a17.88,17.88,0,0,0-8.38,1.27,42.84,42.84,0,0,0-8.21,4.56S37.87,65.35,37,73s-.37,11.54-.37,11.54,4.22,5.68,9.9,7.14,7.7,1.47,7.7,1.47l3.75-4.68a21.22,21.22,0,0,1-4.65-2A24.47,24.47,0,0,1,47.93,82S61.16,88.4,70.68,88.4c10,0,22.75-6.44,22.75-6.44a24.56,24.56,0,0,1-5.35,4.56,21.22,21.22,0,0,1-4.65,2l3.75,4.68s2,0,7.7-1.47,9.89-7.14,9.89-7.14.55-3.85-.37-11.54"/></svg>
+      Rejoindre sur Discord
+    </a>
+    <a class="btn-secondary" href="#telecharger">Voir les telechargements</a>
+  </div>
+</header>
+
+<section id="rejoindre">
+  <div class="section-head">
+    <span class="section-eyebrow">Acces</span>
+    <h2>Comment rejoindre</h2>
+    <p>Le serveur est en whitelist &mdash; trois etapes avant de pouvoir te connecter.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Rejoins le Discord</h3>
+      <p>Toute la communaute et les annonces du serveur sont sur <a href="https://discord.gg/xZBHEWTbD5" target="_blank" rel="noopener">notre Discord</a>. C'est aussi la que tu demandes ton acces.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Demande ta whitelist</h3>
+      <p>Donne ton pseudo Minecraft (compte premium ou pseudo choisi) dans le salon dedie. Un admin t'ajoute a la liste.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Telecharge et joue</h3>
+      <p>Installe le launcher pour ton OS <a href="#telecharger">ci-dessous</a>, connecte-toi (Microsoft ou pseudo libre), clique sur Jouer.</p>
+    </div>
+  </div>
+</section>
+
+<section id="telecharger">
+  <div class="section-head">
+    <span class="section-eyebrow">Launcher</span>
+    <h2>Telecharger</h2>
+    <p>Le launcher gere tout seul : Java, Fabric, les mods, les mises a jour. Choisis ton systeme.</p>
+  </div>
+
+  <div class="platforms" id="platforms">
+    <div class="platform-card" id="card-windows">
+      <span class="tag">.exe &middot; installeur</span>
+      <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5L10 4.5V11.5H3V5.5M11 4.35L21 3V11.5H11V4.35M3 12.5H10V19.5L3 18.5V12.5M11 12.5H21V21L11 19.65V12.5Z"/></svg>
+      <h3>Windows</h3>
+      <div class="meta">win 10/11 &middot; x64 &middot; 105 Mo</div>
+      <a class="dl-btn" href="/downloads/Eclipse%20SMP%20Launcher-setup-0.1.0.exe" download>Telecharger</a>
+    </div>
+
+    <div class="platform-card" id="card-mac">
+      <span class="tag">.dmg &middot; installeur</span>
+      <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/></svg>
+      <h3>macOS</h3>
+      <div class="meta">Apple Silicon &amp; Intel</div>
+      <div class="mac-arches">
+        <a class="dl-btn" href="/downloads/Eclipse%20SMP%20Launcher-setup-0.1.0-arm64.dmg" download>Apple Silicon (M1/M2/M3)</a>
+        <a class="dl-btn ghost" href="/downloads/Eclipse%20SMP%20Launcher-setup-0.1.0-x64.dmg" download>Intel</a>
+      </div>
+    </div>
+
+    <div class="platform-card" id="card-linux">
+      <span class="tag">.AppImage &middot; portable</span>
+      <svg class="os-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14.62,8.35C14.2,8.77 13.61,9 13,9H11C10.39,9 9.8,8.77 9.38,8.35C8.15,7.12 8.15,5.12 9.38,3.88C9.8,3.46 10.39,3.23 11,3.23H13C13.61,3.23 14.2,3.46 14.62,3.88C15.85,5.12 15.85,7.12 14.62,8.35M17.5,10.5C17.5,9.67 16.83,9 16,9H8C7.17,9 6.5,9.67 6.5,10.5V11C6.5,11.83 7.17,12.5 8,12.5H8.5V19.5C8.5,20.6 9.4,21.5 10.5,21.5H13.5C14.6,21.5 15.5,20.6 15.5,19.5V12.5H16C16.83,12.5 17.5,11.83 17.5,11V10.5Z"/></svg>
+      <h3>Linux</h3>
+      <div class="meta">x64 &middot; AppImage &middot; 98 Mo</div>
+      <a class="dl-btn" href="/downloads/Eclipse%20SMP%20Launcher-setup-0.1.0.AppImage" download>Telecharger</a>
+    </div>
+  </div>
+  <p class="dl-note">Executable non signe : Windows/macOS afficheront un avertissement au premier lancement (normal pour un petit serveur communautaire). Sur Windows, clique "Informations complementaires -&gt; Executer quand meme".</p>
+</section>
+
+<section id="mods">
+  <div class="section-head">
+    <span class="section-eyebrow">Fabric 26.2</span>
+    <h2>Ce qui est installe</h2>
+    <p>Un socle d'optimisation obligatoire pour tout le monde, et des mods de confort activables selon tes gouts et ta machine.</p>
+  </div>
+
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-head"><h3>Obligatoire</h3><span class="count">6 mods</span></div>
+      <p class="tier-desc">Le socle technique. Aucune raison de le desactiver.</p>
+      <div class="chips">
+        <span class="chip">Sodium</span><span class="chip">Lithium</span><span class="chip">FerriteCore</span>
+        <span class="chip">Fabric API</span><span class="chip">Fabric Language Kotlin</span><span class="chip">Elytra Trims</span>
+      </div>
+    </div>
+    <div class="tier">
+      <div class="tier-head"><h3>Confort</h3><span class="count">8 mods</span></div>
+      <p class="tier-desc">QoL sans impact sur le jeu. Actifs par defaut.</p>
+      <div class="chips">
+        <span class="chip">JEI</span><span class="chip">AppleSkin</span><span class="chip">Mouse Tweaks</span>
+        <span class="chip">Inventory Profiles Next</span><span class="chip">Entity Culling</span><span class="chip">ImmediatelyFast</span><span class="chip">Dynamic FPS</span>
+      </div>
+    </div>
+    <div class="tier">
+      <div class="tier-head"><h3>Interface</h3><span class="count">4 mods</span></div>
+      <p class="tier-desc">Minimap, carte et menu des mods.</p>
+      <div class="chips">
+        <span class="chip">Xaero's Minimap</span><span class="chip">Xaero's World Map</span><span class="chip">Mod Menu</span>
+      </div>
+    </div>
+    <div class="tier">
+      <div class="tier-head"><h3>PC puissant</h3><span class="count">4 mods</span></div>
+      <p class="tier-desc">Shaders et rendu longue distance. A activer si ta config suit.</p>
+      <div class="chips">
+        <span class="chip">Iris + Complementary</span><span class="chip">Distant Horizons</span><span class="chip">C2ME</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="nav-brand" href="#top">
+    <img src="/assets/logo-32.png" alt="">
+    Eclipse SMP
+  </a>
+  <p>smp.cubi-mc.fr:25565 &middot; Fabric 26.2 &middot; whitelist privee</p>
+  <div class="foot-links">
+    <a href="https://discord.gg/xZBHEWTbD5" target="_blank" rel="noopener">Discord</a>
+    <a href="https://github.com/edouard57/eclipsesmp" target="_blank" rel="noopener">Code source</a>
+  </div>
+</footer>
+
+<script src="/script.js"></script>
+</body>
+</html>
