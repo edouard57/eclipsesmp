@@ -116,14 +116,22 @@ class ProcessBuilder {
      * in-game until selected in options.txt. For File modules marked enabled
      * by default in the distribution, add them to the active list so they
      * work out of the box instead of requiring a manual toggle in-game.
+     *
+     * File modules with an artifact.path have no maven identifier (by design,
+     * see DistributionFactory#resolveMavenComponents), so getVersionlessMavenIdentifier()
+     * throws for them. They also never get a settings UI toggle or a modCfg
+     * entry anywhere in this codebase (parseModulesForUI and
+     * resolveModConfiguration both only handle ForgeMod/LiteMod/LiteLoader/FabricMod),
+     * so whether one is "enabled" is purely its required.value/def from the
+     * distribution -- there is no config to look up.
      */
     syncDefaultResourcePacks(){
-        const modCfg = ConfigManager.getModConfiguration(this.server.rawServer.id).mods
         const toEnable = []
         for(const mdl of this.server.modules){
             const artifactPath = mdl.rawModule.artifact != null ? mdl.rawModule.artifact.path : null
             if(mdl.rawModule.type === Type.File && artifactPath != null && artifactPath.startsWith('resourcepacks/')){
-                if(ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())){
+                const required = mdl.getRequired()
+                if(required.value || required.def){
                     toEnable.push(path.basename(artifactPath))
                 }
             }
