@@ -49,3 +49,8 @@ linux:
 directories:
   buildResources: 'build'
   output: 'dist'
+
+publish:
+  provider: 'github'
+  owner: 'edouard57'
+  repo: 'eclipsesmp'

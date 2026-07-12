@@ -34,5 +34,6 @@ jobs:
       - name: Build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: npm run dist -- --publish always
         shell: bash
