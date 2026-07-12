@@ -7,8 +7,14 @@ players fetching a stale server config.
 import urllib.request
 import json
 
-URL = "https://purge.jsdelivr.net/gh/edouard57/eclipsesmp@main/distribution.json"
+PATHS = [
+    "distribution.json",
+    "branding/server-icon.png",
+    "branding/servers.dat",
+]
 
-req = urllib.request.Request(URL, headers={"User-Agent": "eclipse-smp-launcher-setup/1.0"})
-with urllib.request.urlopen(req, timeout=15) as resp:
-    print(json.dumps(json.load(resp), indent=2))
+for path in PATHS:
+    url = f"https://purge.jsdelivr.net/gh/edouard57/eclipsesmp@main/{path}"
+    req = urllib.request.Request(url, headers={"User-Agent": "eclipse-smp-launcher-setup/1.0"})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        print(path, "->", json.load(resp)["status"])
