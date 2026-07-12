@@ -1,0 +1,204 @@
+{
+    "version": "1.0.0",
+    "rss": "",
+    "servers": [
+        {
+            "id": "eclipse-smp",
+            "name": "Eclipse SMP",
+            "description": "Serveur SMP Eclipse. Fabric 26.2 avec un pack d'optimisation, plus des mods de confort au choix selon la puissance de ton PC.",
+            "icon": "https://raw.githubusercontent.com/TON-USER/TON-REPO/main/branding/server-icon.png",
+            "version": "1.0.0",
+            "address": "smp.cubi-mc.fr:25565",
+            "minecraftVersion": "26.2",
+            "mainServer": true,
+            "autoconnect": true,
+            "javaOptions": {
+                "supported": ">=21",
+                "suggestedMajor": 21,
+                "ram": {
+                    "recommended": 4096,
+                    "minimum": 2048
+                }
+            },
+            "modules": [
+                {
+                    "id": "net.fabricmc:fabric-loader:0.19.3",
+                    "name": "Fabric Loader",
+                    "type": "Fabric",
+                    "artifact": {
+                        "size": 1976502,
+                        "MD5": "881e0e9f53a11b9ad468b47afd678bfd",
+                        "url": "https://maven.fabricmc.net/net/fabricmc/fabric-loader/0.19.3/fabric-loader-0.19.3.jar"
+                    },
+                    "subModules": [
+                        {
+                            "id": "26.2-fabric-0.19.3",
+                            "name": "Fabric (version.json)",
+                            "type": "VersionManifest",
+                            "artifact": {
+                                "size": 2778,
+                                "MD5": "66d31338f5e5b9cabf161a30329a8595",
+                                "url": "https://meta.fabricmc.net/v2/versions/loader/26.2/0.19.3/profile/json"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "modrinth:fabric-api:0.154.2+26.2",
+                    "name": "[26.2] Fabric API 0.154.2+26.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 2523877,
+                        "MD5": "578cfd3bb55a03e78c26e23ae0e8f4d4",
+                        "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/Kr4WG5mG/fabric-api-0.154.2%2B26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:sodium:mc26.2-0.9.1-fabric",
+                    "name": "Sodium 0.9.1 for Fabric 26.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1834384,
+                        "MD5": "12238397e6e067c00369e72999e8d163",
+                        "url": "https://cdn.modrinth.com/data/AANobbMI/versions/2Yom1N68/sodium-fabric-0.9.1%2Bmc26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:lithium:mc26.2-0.25.2-fabric",
+                    "name": "Lithium 0.25.2 for Fabric",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 911988,
+                        "MD5": "d16388be24b1d29104f9462c1c4e44a7",
+                        "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/UPNexAfy/lithium-fabric-0.25.2%2Bmc26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:ferrite-core:9.0.0-fabric",
+                    "name": "ferritecore-9.0.0-fabric",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 72677,
+                        "MD5": "9d96f643cfd220b75f47c94ea56ebc2a",
+                        "url": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:dynamic-fps:3.11.9",
+                    "name": "[Confort] v3.11.9",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 188740,
+                        "MD5": "bbd6ce171a7c37fed0dba4d96f91f400",
+                        "url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/pC2JjFw1/dynamic-fps-3.11.9%2Bminecraft-26.2.0-fabric.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:entityculling:1.10.5",
+                    "name": "[PC moyen] 1.10.5-26.2 - Fabric",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 1583775,
+                        "MD5": "a5386ffd224844effbbfa2e8b4784824",
+                        "url": "https://cdn.modrinth.com/data/NNAgCjsB/versions/iiF6U3Ne/entityculling-fabric-1.10.5-mc26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:immediatelyfast:1.16.2+26.2-fabric",
+                    "name": "[PC moyen] ImmediatelyFast 1.16.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 91422,
+                        "MD5": "d7a174061600c61077e4270136de2153",
+                        "url": "https://cdn.modrinth.com/data/5ZwdcRci/versions/uJHxuQxy/ImmediatelyFast-Fabric-1.16.2%2B26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:c2me-fabric:0.4.2-alpha.0.13+26.2",
+                    "name": "[PC puissant] 0.4.2-alpha.0.13 devbuild for 26.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 3779880,
+                        "MD5": "9919194833c5652e9cae9c8d5d9b9082",
+                        "url": "https://cdn.modrinth.com/data/VSNURh3q/versions/XQMx5J57/c2me-fabric-mc26.2-0.4.2-alpha.0.13.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:iris:1.11.2+26.2-fabric",
+                    "name": "[PC puissant] Iris 1.11.2 for Fabric 26.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 2820763,
+                        "MD5": "11c0b0d99bf9d9cb55f9e35a2d6bb85f",
+                        "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/oaD6KQls/iris-fabric-1.11.2%2Bmc26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:distanthorizons:3.2.0-b-26.2",
+                    "name": "[PC puissant] 3.2.0-b - 26.2 neo/fabric",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 29705395,
+                        "MD5": "4ebb4b10b8da4d31798c3a5962c565ef",
+                        "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/gBf0SaV1/DistantHorizons-3.2.0-b-26.2-fabric-neoforge.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:complementary-reimagined:r5.8.1",
+                    "name": "[PC puissant] ComplementaryReimagined_r5.8.1.zip",
+                    "type": "File",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 546925,
+                        "MD5": "8dbb914ed233d6e8183ce34eb26beaab",
+                        "path": "shaderpacks/ComplementaryReimagined_r5.8.1.zip",
+                        "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/yCCduG44/ComplementaryReimagined_r5.8.1.zip"
+                    }
+                }
+            ]
+        }
+    ]
+}

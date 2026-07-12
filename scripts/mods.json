@@ -1,0 +1,110 @@
+{
+  "fabric-api": {
+    "project_id": "P7dR8mSH",
+    "version_number": "0.154.2+26.2",
+    "name": "[26.2] Fabric API 0.154.2+26.2",
+    "filename": "fabric-api-0.154.2+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/Kr4WG5mG/fabric-api-0.154.2%2B26.2.jar",
+    "size": 2523877,
+    "md5": "578cfd3bb55a03e78c26e23ae0e8f4d4",
+    "sha1": "3b877ba08c963948290098cb4ab718046b011987"
+  },
+  "sodium": {
+    "project_id": "AANobbMI",
+    "version_number": "mc26.2-0.9.1-fabric",
+    "name": "Sodium 0.9.1 for Fabric 26.2",
+    "filename": "sodium-fabric-0.9.1+mc26.2.jar",
+    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/2Yom1N68/sodium-fabric-0.9.1%2Bmc26.2.jar",
+    "size": 1834384,
+    "md5": "12238397e6e067c00369e72999e8d163",
+    "sha1": "14f3388694fa77f870d28262f74562de67eabcbe"
+  },
+  "lithium": {
+    "project_id": "gvQqBUqZ",
+    "version_number": "mc26.2-0.25.2-fabric",
+    "name": "Lithium 0.25.2 for Fabric",
+    "filename": "lithium-fabric-0.25.2+mc26.2.jar",
+    "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/UPNexAfy/lithium-fabric-0.25.2%2Bmc26.2.jar",
+    "size": 911988,
+    "md5": "d16388be24b1d29104f9462c1c4e44a7",
+    "sha1": "3bcc94183d7068395de08915fd5fce8d199aaa50"
+  },
+  "ferrite-core": {
+    "project_id": "uXXizFIs",
+    "version_number": "9.0.0-fabric",
+    "name": "ferritecore-9.0.0-fabric",
+    "filename": "ferritecore-9.0.0-fabric.jar",
+    "url": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar",
+    "size": 72677,
+    "md5": "9d96f643cfd220b75f47c94ea56ebc2a",
+    "sha1": "eac76ff0f3753422c61b2c44487d0d195d88d4bc"
+  },
+  "dynamic-fps": {
+    "project_id": "LQ3K71Q1",
+    "version_number": "3.11.9",
+    "name": "v3.11.9",
+    "filename": "dynamic-fps-3.11.9+minecraft-26.2.0-fabric.jar",
+    "url": "https://cdn.modrinth.com/data/LQ3K71Q1/versions/pC2JjFw1/dynamic-fps-3.11.9%2Bminecraft-26.2.0-fabric.jar",
+    "size": 188740,
+    "md5": "bbd6ce171a7c37fed0dba4d96f91f400",
+    "sha1": "e8cd9e4fbc6d42091faffc873b0801f1189ed6a5"
+  },
+  "entityculling": {
+    "project_id": "NNAgCjsB",
+    "version_number": "1.10.5",
+    "name": "1.10.5-26.2 - Fabric",
+    "filename": "entityculling-fabric-1.10.5-mc26.2.jar",
+    "url": "https://cdn.modrinth.com/data/NNAgCjsB/versions/iiF6U3Ne/entityculling-fabric-1.10.5-mc26.2.jar",
+    "size": 1583775,
+    "md5": "a5386ffd224844effbbfa2e8b4784824",
+    "sha1": "f66f9d8cbb1f76466aaf45e46fb11b18207e3aef"
+  },
+  "immediatelyfast": {
+    "project_id": "5ZwdcRci",
+    "version_number": "1.16.2+26.2-fabric",
+    "name": "ImmediatelyFast 1.16.2",
+    "filename": "ImmediatelyFast-Fabric-1.16.2+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/5ZwdcRci/versions/uJHxuQxy/ImmediatelyFast-Fabric-1.16.2%2B26.2.jar",
+    "size": 91422,
+    "md5": "d7a174061600c61077e4270136de2153",
+    "sha1": "2d1cd27b0b570f908b665c02a35b49381b4c5ec1"
+  },
+  "c2me-fabric": {
+    "project_id": "VSNURh3q",
+    "version_number": "0.4.2-alpha.0.13+26.2",
+    "name": "0.4.2-alpha.0.13 devbuild for 26.2",
+    "filename": "c2me-fabric-mc26.2-0.4.2-alpha.0.13.jar",
+    "url": "https://cdn.modrinth.com/data/VSNURh3q/versions/XQMx5J57/c2me-fabric-mc26.2-0.4.2-alpha.0.13.jar",
+    "size": 3779880,
+    "md5": "9919194833c5652e9cae9c8d5d9b9082",
+    "sha1": "f531fb2c8774fd30c9fbeedc2d4a60bf9f59995f"
+  },
+  "iris": {
+    "project_id": "YL57xq9U",
+    "version_number": "1.11.2+26.2-fabric",
+    "name": "Iris 1.11.2 for Fabric 26.2",
+    "filename": "iris-fabric-1.11.2+mc26.2.jar",
+    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/oaD6KQls/iris-fabric-1.11.2%2Bmc26.2.jar",
+    "size": 2820763,
+    "md5": "11c0b0d99bf9d9cb55f9e35a2d6bb85f",
+    "sha1": "f7d526b1062c4bfe2567113cf933d1de26eddd3f"
+  },
+  "distanthorizons": {
+    "project_id": "uCdwusMi",
+    "version_number": "3.2.0-b-26.2",
+    "name": "3.2.0-b - 26.2 neo/fabric",
+    "filename": "DistantHorizons-3.2.0-b-26.2-fabric-neoforge.jar",
+    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/gBf0SaV1/DistantHorizons-3.2.0-b-26.2-fabric-neoforge.jar",
+    "size": 29705395,
+    "md5": "4ebb4b10b8da4d31798c3a5962c565ef",
+    "sha1": "3646a34691c0857a64614bb7ecd344d8b22b117a"
+  },
+  "complementary-reimagined": {
+    "project_id": "HVnmMxH1",
+    "version_number": "r5.8.1",
+    "filename": "ComplementaryReimagined_r5.8.1.zip",
+    "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/yCCduG44/ComplementaryReimagined_r5.8.1.zip",
+    "size": 546925,
+    "md5": "8dbb914ed233d6e8183ce34eb26beaab"
+  }
+}
