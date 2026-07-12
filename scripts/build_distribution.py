@@ -7,6 +7,7 @@ import os
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODS = json.load(open(os.path.join(BASE, "scripts", "mods.json")))
+FABRIC_LIBS = json.load(open(os.path.join(BASE, "scripts", "fabric_libs.json")))
 
 MC_VERSION = "26.2"
 FABRIC_LOADER_VERSION = "0.19.3"
@@ -70,7 +71,26 @@ fabric_loader_module = {
                 "MD5": FABRIC_PROFILE_MD5,
                 "url": f"https://meta.fabricmc.net/v2/versions/loader/{MC_VERSION}/{FABRIC_LOADER_VERSION}/profile/json",
             },
-        }
+        },
+        # Fabric Loader's own runtime dependencies (ASM + sponge-mixin). These are
+        # NOT read from the VersionManifest above by HeliosLauncher's classpath
+        # builder -- only explicit "Library" submodules are added to -cp. Without
+        # these, KnotClient crashes at startup with "ASM not detected on the
+        # classpath". Keep this list in sync with the "libraries" array returned
+        # by https://meta.fabricmc.net/v2/versions/loader/<mc>/<loader>/profile/json
+        *[
+            {
+                "id": maven_id,
+                "name": maven_id.split(":")[1],
+                "type": "Library",
+                "artifact": {
+                    "size": lib["size"],
+                    "MD5": lib["md5"],
+                    "url": lib["url"],
+                },
+            }
+            for maven_id, lib in FABRIC_LIBS.items()
+        ],
     ],
 }
 

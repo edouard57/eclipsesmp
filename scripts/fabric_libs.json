@@ -1,0 +1,32 @@
+{
+  "org.ow2.asm:asm:9.10.1": {
+    "url": "https://maven.fabricmc.net/org/ow2/asm/asm/9.10.1/asm-9.10.1.jar",
+    "size": 126151,
+    "md5": "9cb72080438acf27f2607002e1444a7b"
+  },
+  "org.ow2.asm:asm-analysis:9.10.1": {
+    "url": "https://maven.fabricmc.net/org/ow2/asm/asm-analysis/9.10.1/asm-analysis-9.10.1.jar",
+    "size": 35140,
+    "md5": "6dd9011ec87f65e4b2e14e938c4118e4"
+  },
+  "org.ow2.asm:asm-commons:9.10.1": {
+    "url": "https://maven.fabricmc.net/org/ow2/asm/asm-commons/9.10.1/asm-commons-9.10.1.jar",
+    "size": 74840,
+    "md5": "8eee0b1bdd046baf472eb83dd5e6bb44"
+  },
+  "org.ow2.asm:asm-tree:9.10.1": {
+    "url": "https://maven.fabricmc.net/org/ow2/asm/asm-tree/9.10.1/asm-tree-9.10.1.jar",
+    "size": 51958,
+    "md5": "62541e1dc62331408ef31317555bf4fa"
+  },
+  "org.ow2.asm:asm-util:9.10.1": {
+    "url": "https://maven.fabricmc.net/org/ow2/asm/asm-util/9.10.1/asm-util-9.10.1.jar",
+    "size": 95628,
+    "md5": "d0892ecb209867805e7d2418e5dc6c42"
+  },
+  "net.fabricmc:sponge-mixin:0.17.3+mixin.0.8.7": {
+    "url": "https://maven.fabricmc.net/net/fabricmc/sponge-mixin/0.17.3+mixin.0.8.7/sponge-mixin-0.17.3+mixin.0.8.7.jar",
+    "size": 1540060,
+    "md5": "87002a5fc9faa1543bf4204f8d5876fb"
+  }
+}
