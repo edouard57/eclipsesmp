@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "rss": "",
+    "rss": "https://eclipsesmp.cubi-mc.fr/news.xml",
     "servers": [
         {
             "id": "eclipse-smp",
@@ -424,6 +424,17 @@
                         "MD5": "8dbb914ed233d6e8183ce34eb26beaab",
                         "path": "shaderpacks/ComplementaryReimagined_r5.8.1.zip",
                         "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/yCCduG44/ComplementaryReimagined_r5.8.1.zip"
+                    }
+                },
+                {
+                    "id": "eclipse-smp:servers.dat",
+                    "name": "Serveur pre-rempli dans le menu multijoueur",
+                    "type": "File",
+                    "artifact": {
+                        "size": 85,
+                        "MD5": "73414b3c9ea074adb9daa84813509413",
+                        "path": "servers.dat",
+                        "url": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/servers.dat"
                     }
                 }
             ]

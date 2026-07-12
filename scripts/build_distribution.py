@@ -129,11 +129,22 @@ modules = [
     fabric_mod_module("iris", tier_prefix="[PC puissant]", required=False, default=False),
     fabric_mod_module("distanthorizons", tier_prefix="[PC puissant]", required=False, default=False),
     shader_file_module("complementary-reimagined", "shaderpacks/ComplementaryReimagined_r5.8.1.zip"),
+    {
+        "id": "eclipse-smp:servers.dat",
+        "name": "Serveur pre-rempli dans le menu multijoueur",
+        "type": "File",
+        "artifact": {
+            "size": 85,
+            "MD5": "73414b3c9ea074adb9daa84813509413",
+            "path": "servers.dat",
+            "url": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/servers.dat",
+        },
+    },
 ]
 
 distribution = {
     "version": "1.0.0",
-    "rss": "",
+    "rss": "https://eclipsesmp.cubi-mc.fr/news.xml",
     "servers": [
         {
             "id": "eclipse-smp",

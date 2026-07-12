@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+<channel>
+  <title>Eclipse SMP</title>
+  <link>https://eclipsesmp.cubi-mc.fr</link>
+  <description>Actus du serveur Eclipse SMP</description>
+  <language>fr-fr</language>
+
+  <item>
+    <title>Ouverture du serveur et premiere mise a jour du launcher</title>
+    <link>https://eclipsesmp.cubi-mc.fr</link>
+    <guid isPermaLink="false">eclipsesmp-2026-07-12-launch</guid>
+    <pubDate>Sun, 12 Jul 2026 18:40:00 +0200</pubDate>
+    <dc:creator>Eclipse SMP</dc:creator>
+    <slash:comments>0</slash:comments>
+    <content:encoded><![CDATA[
+      <p>Le launcher et le serveur sont prets. Voici ce qui a change recemment :</p>
+      <p><strong>Nouveaux mods</strong></p>
+      <ul>
+        <li>Elytra Trims (obligatoire) -- personnalise ton elytre avec des motifs</li>
+        <li>JEI -- consulte les recettes directement en jeu</li>
+        <li>Xaero's Minimap &amp; World Map -- carte et mini-carte</li>
+        <li>AppleSkin, Mouse Tweaks, Inventory Profiles Next -- confort d'inventaire</li>
+        <li>Mod Menu -- gere tes mods depuis le jeu</li>
+      </ul>
+      <p><strong>Palier "PC puissant"</strong> (desactive par defaut) : Iris + shader Complementary Reimagined, Distant Horizons, C2ME.</p>
+      <p><strong>Cote serveur</strong></p>
+      <ul>
+        <li>WorldEdit installe pour l'administration du monde</li>
+        <li>Distant Horizons cote serveur -- generation plus rapide du rendu longue distance</li>
+        <li>Serveur desormais en whitelist -- demande ton acces sur le Discord</li>
+      </ul>
+      <p><strong>Launcher</strong></p>
+      <ul>
+        <li>Site web avec telechargement direct pour Windows, macOS et Linux</li>
+        <li>Connexion possible avec un pseudo non-premium, en plus du compte Microsoft</li>
+        <li>Correction d'un plantage au demarrage du jeu (Java 25 desormais requis)</li>
+        <li>Traduction complete en francais</li>
+      </ul>
+    ]]></content:encoded>
+  </item>
+
+</channel>
+</rss>
