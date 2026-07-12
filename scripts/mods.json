@@ -106,5 +106,14 @@
     "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/yCCduG44/ComplementaryReimagined_r5.8.1.zip",
     "size": 546925,
     "md5": "8dbb914ed233d6e8183ce34eb26beaab"
+  },
+  "jei": {
+    "project_id": "u6dRKJwZ",
+    "version_number": "30.10.0.60",
+    "name": "30.10.0.60 for Fabric 26.2",
+    "filename": "jei-26.2-fabric-30.10.0.60.jar",
+    "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/WyzzzTmr/jei-26.2-fabric-30.10.0.60.jar",
+    "size": 1662516,
+    "md5": "0ffa763c5884be324bc2708f13abdf07"
   }
 }

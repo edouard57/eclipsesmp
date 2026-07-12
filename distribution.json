@@ -114,6 +114,20 @@
                     }
                 },
                 {
+                    "id": "modrinth:jei:30.10.0.60",
+                    "name": "[Confort] 30.10.0.60 for Fabric 26.2",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1662516,
+                        "MD5": "0ffa763c5884be324bc2708f13abdf07",
+                        "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/WyzzzTmr/jei-26.2-fabric-30.10.0.60.jar"
+                    }
+                },
+                {
                     "id": "modrinth:entityculling:1.10.5",
                     "name": "[PC moyen] 1.10.5-26.2 - Fabric",
                     "type": "FabricMod",

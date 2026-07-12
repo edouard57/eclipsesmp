@@ -83,6 +83,7 @@ modules = [
     fabric_mod_module("ferrite-core", required=True),
     # --- Confort (optional, on by default even on weak PCs) ---
     fabric_mod_module("dynamic-fps", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("jei", tier_prefix="[Confort]", required=False, default=True),
     # --- PC moyen (optional, off by default) ---
     fabric_mod_module("entityculling", tier_prefix="[PC moyen]", required=False, default=False),
     fabric_mod_module("immediatelyfast", tier_prefix="[PC moyen]", required=False, default=False),
