@@ -719,6 +719,19 @@ class ProcessBuilder {
 
         const libArr = this.vanillaManifest.libraries
         fs.ensureDirSync(tempNativePath)
+        // Recent Minecraft versions (26.x) split native scratch dirs by
+        // consumer: -Djava.library.path=${natives_directory}/java,
+        // -Djna.tmpdir=.../jna, -Dorg.lwjgl.system.SharedLibraryExtractPath=.../lwjgl,
+        // -Dio.netty.native.workdir=.../netty (see the vanilla version.json jvm
+        // args). JNA/LWJGL-extract/Netty self-extract their own bundled natives
+        // into their scratch dir at runtime, so those just need to exist. LWJGL's
+        // system/JNI natives however are extracted by us below, and must land in
+        // the "java" subdir specifically or java.library.path lookups fail.
+        const javaNativesPath = path.join(tempNativePath, 'java')
+        fs.ensureDirSync(javaNativesPath)
+        fs.ensureDirSync(path.join(tempNativePath, 'jna'))
+        fs.ensureDirSync(path.join(tempNativePath, 'lwjgl'))
+        fs.ensureDirSync(path.join(tempNativePath, 'netty'))
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(isLibraryCompatible(lib.rules, lib.natives)){
@@ -750,7 +763,7 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
+                            fs.writeFile(path.join(javaNativesPath, fileName), zipEntries[i].getData(), (err) => {
                                 if(err){
                                     logger.error('Error while extracting native library:', err)
                                 }
@@ -801,7 +814,7 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, extractName), zipEntries[i].getData(), (err) => {
+                            fs.writeFile(path.join(javaNativesPath, extractName), zipEntries[i].getData(), (err) => {
                                 if(err){
                                     logger.error('Error while extracting native library:', err)
                                 }

@@ -1,0 +1,13 @@
+{
+  "fabric-api": "Fabric API",
+  "sodium": "Sodium",
+  "lithium": "Lithium",
+  "ferrite-core": "FerriteCore",
+  "dynamic-fps": "Dynamic FPS",
+  "entityculling": "Entity Culling",
+  "immediatelyfast": "ImmediatelyFast",
+  "c2me-fabric": "Concurrent Chunk Management Engine (Fabric)",
+  "iris": "Iris Shaders",
+  "distanthorizons": "Distant Horizons",
+  "jei": "Just Enough Items (JEI)"
+}

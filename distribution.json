@@ -105,7 +105,7 @@
                 },
                 {
                     "id": "modrinth:fabric-api:0.154.2+26.2",
-                    "name": "[26.2] Fabric API 0.154.2+26.2",
+                    "name": "Fabric API",
                     "type": "FabricMod",
                     "required": {
                         "value": true,
@@ -119,7 +119,7 @@
                 },
                 {
                     "id": "modrinth:sodium:mc26.2-0.9.1-fabric",
-                    "name": "Sodium 0.9.1 for Fabric 26.2",
+                    "name": "Sodium",
                     "type": "FabricMod",
                     "required": {
                         "value": true,
@@ -133,7 +133,7 @@
                 },
                 {
                     "id": "modrinth:lithium:mc26.2-0.25.2-fabric",
-                    "name": "Lithium 0.25.2 for Fabric",
+                    "name": "Lithium",
                     "type": "FabricMod",
                     "required": {
                         "value": true,
@@ -147,7 +147,7 @@
                 },
                 {
                     "id": "modrinth:ferrite-core:9.0.0-fabric",
-                    "name": "ferritecore-9.0.0-fabric",
+                    "name": "FerriteCore",
                     "type": "FabricMod",
                     "required": {
                         "value": true,
@@ -161,7 +161,7 @@
                 },
                 {
                     "id": "modrinth:dynamic-fps:3.11.9",
-                    "name": "[Confort] v3.11.9",
+                    "name": "[Confort] Dynamic FPS",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
@@ -175,7 +175,7 @@
                 },
                 {
                     "id": "modrinth:jei:30.10.0.60",
-                    "name": "[Confort] 30.10.0.60 for Fabric 26.2",
+                    "name": "[Confort] Just Enough Items (JEI)",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
@@ -189,11 +189,11 @@
                 },
                 {
                     "id": "modrinth:entityculling:1.10.5",
-                    "name": "[PC moyen] 1.10.5-26.2 - Fabric",
+                    "name": "[Confort] Entity Culling",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
-                        "def": false
+                        "def": true
                     },
                     "artifact": {
                         "size": 1583775,
@@ -203,11 +203,11 @@
                 },
                 {
                     "id": "modrinth:immediatelyfast:1.16.2+26.2-fabric",
-                    "name": "[PC moyen] ImmediatelyFast 1.16.2",
+                    "name": "[Confort] ImmediatelyFast",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
-                        "def": false
+                        "def": true
                     },
                     "artifact": {
                         "size": 91422,
@@ -217,7 +217,7 @@
                 },
                 {
                     "id": "modrinth:c2me-fabric:0.4.2-alpha.0.13+26.2",
-                    "name": "[PC puissant] 0.4.2-alpha.0.13 devbuild for 26.2",
+                    "name": "[PC puissant] Concurrent Chunk Management Engine (Fabric)",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
@@ -231,7 +231,7 @@
                 },
                 {
                     "id": "modrinth:iris:1.11.2+26.2-fabric",
-                    "name": "[PC puissant] Iris 1.11.2 for Fabric 26.2",
+                    "name": "[PC puissant] Iris Shaders",
                     "type": "FabricMod",
                     "required": {
                         "value": false,
@@ -245,7 +245,7 @@
                 },
                 {
                     "id": "modrinth:distanthorizons:3.2.0-b-26.2",
-                    "name": "[PC puissant] 3.2.0-b - 26.2 neo/fabric",
+                    "name": "[PC puissant] Distant Horizons",
                     "type": "FabricMod",
                     "required": {
                         "value": false,

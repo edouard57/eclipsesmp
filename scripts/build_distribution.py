@@ -8,6 +8,7 @@ import os
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODS = json.load(open(os.path.join(BASE, "scripts", "mods.json")))
 FABRIC_LIBS = json.load(open(os.path.join(BASE, "scripts", "fabric_libs.json")))
+MOD_TITLES = json.load(open(os.path.join(BASE, "scripts", "mod_titles.json")))
 
 MC_VERSION = "26.2"
 FABRIC_LOADER_VERSION = "0.19.3"
@@ -23,9 +24,10 @@ SERVER_ICON_URL = "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/b
 
 def fabric_mod_module(key, tier_prefix=None, required=True, default=True):
     m = MODS[key]
+    title = MOD_TITLES.get(key, key)
     return {
         "id": f"modrinth:{key}:{m['version_number']}",
-        "name": f"{tier_prefix + ' ' if tier_prefix else ''}{m.get('name', key)}",
+        "name": f"{tier_prefix + ' ' if tier_prefix else ''}{title}",
         "type": "FabricMod",
         "required": {"value": required, "def": default},
         "artifact": {
@@ -101,13 +103,13 @@ modules = [
     fabric_mod_module("sodium", required=True),
     fabric_mod_module("lithium", required=True),
     fabric_mod_module("ferrite-core", required=True),
-    # --- Confort (optional, on by default even on weak PCs) ---
+    # --- Confort (optional, on by default even on weak PCs: pure optimizations
+    #     or QoL with no real tradeoff, same spirit as the required core above) ---
     fabric_mod_module("dynamic-fps", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("jei", tier_prefix="[Confort]", required=False, default=True),
-    # --- PC moyen (optional, off by default) ---
-    fabric_mod_module("entityculling", tier_prefix="[PC moyen]", required=False, default=False),
-    fabric_mod_module("immediatelyfast", tier_prefix="[PC moyen]", required=False, default=False),
-    # --- PC puissant (optional, off by default) ---
+    fabric_mod_module("entityculling", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("immediatelyfast", tier_prefix="[Confort]", required=False, default=True),
+    # --- PC puissant (optional, off by default: real CPU/GPU/RAM cost) ---
     fabric_mod_module("c2me-fabric", tier_prefix="[PC puissant]", required=False, default=False),
     fabric_mod_module("iris", tier_prefix="[PC puissant]", required=False, default=False),
     fabric_mod_module("distanthorizons", tier_prefix="[PC puissant]", required=False, default=False),
