@@ -6,7 +6,7 @@
             "id": "eclipse-smp",
             "name": "Eclipse SMP",
             "description": "Serveur SMP Eclipse. Fabric 26.2 avec un pack d'optimisation, plus des mods de confort au choix selon la puissance de ton PC.",
-            "icon": "https://cdn.jsdelivr.net/gh/edouard57/eclipsesmp@main/branding/server-icon.png",
+            "icon": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/server-icon.png",
             "version": "1.0.0",
             "address": "smp.cubi-mc.fr:25565",
             "minecraftVersion": "26.2",
@@ -477,7 +477,7 @@
                         "size": 12586,
                         "MD5": "de48c9d91966da0abcda7f32bc2709e3",
                         "path": "servers.dat",
-                        "url": "https://cdn.jsdelivr.net/gh/edouard57/eclipsesmp@main/branding/servers.dat"
+                        "url": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/servers.dat"
                     }
                 }
             ]

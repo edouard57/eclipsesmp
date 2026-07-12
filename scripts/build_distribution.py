@@ -19,7 +19,7 @@ FABRIC_PROFILE_SIZE = 2778
 
 # Placeholders to fill in once the server + repo hosting exist.
 SERVER_ADDRESS = "smp.cubi-mc.fr:25565"
-SERVER_ICON_URL = "https://cdn.jsdelivr.net/gh/edouard57/eclipsesmp@main/branding/server-icon.png"
+SERVER_ICON_URL = "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/server-icon.png"
 
 # Clean on-disk name (the Modrinth filename has a space in it). Must match
 # the resourcePacks entry ProcessBuilder writes into options.txt.
@@ -161,7 +161,7 @@ modules = [
             "size": 12586,
             "MD5": "de48c9d91966da0abcda7f32bc2709e3",
             "path": "servers.dat",
-            "url": "https://cdn.jsdelivr.net/gh/edouard57/eclipsesmp@main/branding/servers.dat",
+            "url": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/servers.dat",
         },
     },
 ]
