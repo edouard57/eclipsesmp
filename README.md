@@ -113,3 +113,17 @@ dossier dédié :
 
 (renommé depuis `.helioslauncher` d'origine pour ne pas entrer en conflit
 avec une éventuelle install de HeliosLauncher vanilla sur la même machine).
+
+## Logs du launcher (pour diagnostiquer un bug)
+
+Le launcher lui-même (pas Minecraft) écrit ce qui apparaît normalement
+dans la console DevTools (Ctrl+Shift+I) dans un fichier, un par session,
+avec rotation automatique (les 10 plus récents sont gardés) :
+
+- Linux : `~/.config/Eclipse SMP Launcher/logs/`
+- Windows : `%APPDATA%\Eclipse SMP Launcher\logs\`
+- macOS : `~/Library/Application Support/Eclipse SMP Launcher/logs/`
+
+En cas de bug launcher (pas de crash Minecraft, ça c'est
+`instances/eclipse-smp/logs/latest.log` -- voir plus haut), demande le
+fichier `launcher-<date>.log` le plus récent.

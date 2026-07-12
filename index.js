@@ -12,9 +12,14 @@ const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
+const FileLogger                        = require('./app/assets/js/filelogger')
 
 // Setup Lang
 LangLoader.setupLanguage()
+
+// Setup persistent logging (mirrors the DevTools console to disk).
+const logFilePath = FileLogger.init(app.getPath('userData'))
+console.log(`Logging to ${logFilePath}`)
 
 // Setup auto updater.
 function initAutoUpdater(event, data) {
@@ -237,6 +242,7 @@ function createWindow() {
         backgroundColor: '#171614'
     })
     remoteMain.enable(win.webContents)
+    FileLogger.attachRenderer(win.webContents)
 
     const data = {
         bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
