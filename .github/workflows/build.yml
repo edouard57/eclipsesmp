@@ -59,6 +59,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v6
 
+      # NOTE: electron-builder's "find existing draft" lookup for a given
+      # tag has its own race window across the 3 parallel matrix jobs --
+      # it's possible (rarely) for 2 jobs to each create their own draft
+      # instead of sharing one, leaving an incomplete duplicate. `gh
+      # release edit <tag>` only touches one of them. If a release is
+      # missing assets after this job, check for and delete a duplicate
+      # draft with the same tag: `gh release list` / `gh api repos/.../releases`.
       - name: Publish the draft release created by the matrix builds
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
