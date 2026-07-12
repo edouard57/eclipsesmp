@@ -204,7 +204,7 @@ errorDuringFileDownloadTitle = "Erreur pendant le telechargement des fichiers"
 preparingToLaunch = "Preparation du lancement.."
 launchingGame = "Lancement du jeu.."
 launchWrapperNotDownloaded = "Le fichier principal, LaunchWrapper, n'a pas ete telecharge correctement. Le jeu ne peut donc pas se lancer.<br><br>Pour resoudre ce probleme, desactive temporairement ton antivirus et relance le jeu.<br><br>Si tu as le temps, merci de <a href=\"https://github.com/dscalzi/HeliosLauncher/issues\">signaler un probleme</a> en indiquant quel antivirus tu utilises."
-doneEnjoyServer = "Termine. Amuse-toi bien sur le serveur !"
+doneEnjoyServer = "Minecraft demarre... ca peut prendre jusqu'a une minute la premiere fois, patiente !"
 checkConsoleForDetails = "Merci de consulter la console (CTRL + Shift + i) pour plus de details."
 
 [js.landing.news]
