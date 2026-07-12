@@ -140,6 +140,9 @@ modules = [
     fabric_mod_module("inventory-profiles-next", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("jade", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("simple-voice-chat", tier_prefix="[Confort]", required=False, default=True),
+    # Library required by Zoomify.
+    fabric_mod_module("yacl", required=True),
+    fabric_mod_module("zoomify", tier_prefix="[Confort]", required=False, default=True),
     # --- Interface (minimap / carte / menu des mods, optionnel, actif par defaut) ---
     fabric_mod_module("xaeros-minimap", tier_prefix="[Interface]", required=False, default=True),
     fabric_mod_module("xaeros-world-map", tier_prefix="[Interface]", required=False, default=True),

@@ -328,6 +328,34 @@
                     }
                 },
                 {
+                    "id": "modrinth:yacl:3.9.5+26.2-fabric",
+                    "name": "YetAnotherConfigLib",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1121528,
+                        "MD5": "b4e14cae8115abcae97377260c65843f",
+                        "url": "https://cdn.modrinth.com/data/1eAoo2KR/versions/LlSShNCR/yet_another_config_lib_v3-3.9.5%2B26.2-fabric.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:zoomify:2.16.1+26.2",
+                    "name": "[Confort] Zoomify",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 562176,
+                        "MD5": "4f65c14cb8745ee2dd5e39c8026df5f4",
+                        "url": "https://cdn.modrinth.com/data/w7ThoJFB/versions/QWTzJNJY/zoomify-2.16.1%2B26.2.jar"
+                    }
+                },
+                {
                     "id": "modrinth:xaeros-minimap:fabric-26.2-26.2.0",
                     "name": "[Interface] Xaero's Minimap",
                     "type": "FabricMod",

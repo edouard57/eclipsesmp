@@ -233,5 +233,25 @@
     "size": 238845,
     "md5": "ca6862b2c96e65c15649cb4858998651",
     "sha1": "b2068548fdd851920a8407c83b65276545689843"
+  },
+  "zoomify": {
+    "project_id": "w7ThoJFB",
+    "version_number": "2.16.1+26.2",
+    "name": "Zoomify 2.16.1+26.2",
+    "filename": "zoomify-2.16.1+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/w7ThoJFB/versions/QWTzJNJY/zoomify-2.16.1%2B26.2.jar",
+    "size": 562176,
+    "md5": "4f65c14cb8745ee2dd5e39c8026df5f4",
+    "sha1": "3303552e44587bb10c1d1c91b038dc7ace0fa376"
+  },
+  "yacl": {
+    "project_id": "1eAoo2KR",
+    "version_number": "3.9.5+26.2-fabric",
+    "name": "3.9.5 for fabric 26.2",
+    "filename": "yet_another_config_lib_v3-3.9.5+26.2-fabric.jar",
+    "url": "https://cdn.modrinth.com/data/1eAoo2KR/versions/LlSShNCR/yet_another_config_lib_v3-3.9.5%2B26.2-fabric.jar",
+    "size": 1121528,
+    "md5": "b4e14cae8115abcae97377260c65843f",
+    "sha1": "e5d90b4f2cc508056097249d71fc9482ae73c111"
   }
 }
