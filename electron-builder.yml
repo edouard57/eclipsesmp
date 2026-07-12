@@ -54,3 +54,4 @@ publish:
   provider: 'github'
   owner: 'edouard57'
   repo: 'eclipsesmp'
+  draft: false
