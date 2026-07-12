@@ -203,5 +203,35 @@
     "url": "https://cdn.modrinth.com/data/MPCX6s5C/versions/67xQnLDS/notenoughanimations-fabric-1.12.4-mc26.2.jar",
     "size": 1937831,
     "md5": "ac5b1243958e7f14862ee13b55408a01"
+  },
+  "jade": {
+    "project_id": "nvQzSEkH",
+    "version_number": "26.2.9+fabric",
+    "name": "[Fabric 26.2.X] 26.2.9",
+    "filename": "Jade-mc26.2-Fabric-26.2.9.jar",
+    "url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/dnZQ9Fgp/Jade-mc26.2-Fabric-26.2.9.jar",
+    "size": 1032857,
+    "md5": "51672733c8e4df8b3cb7e0e5b7fe57dd",
+    "sha1": "f207c7350e29683db11b25ca3d909e49e19b3715"
+  },
+  "simple-voice-chat": {
+    "project_id": "9eGKb6K1",
+    "version_number": "fabric-2.6.20+26.2",
+    "name": "Simple Voice Chat 2.6.20+26.2",
+    "filename": "voicechat-fabric-2.6.20+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/bvaEHE2T/voicechat-fabric-2.6.20%2B26.2.jar",
+    "size": 5569123,
+    "md5": "dca7ed23d7e890a13f42412a8995f40d",
+    "sha1": "cdb67f7d187dc886c6010d4710f3d2025e5e16ac"
+  },
+  "fullbright-ub": {
+    "project_id": "ItHr72Fy",
+    "version_number": "6.0",
+    "name": "FUB 6.0",
+    "filename": "Fullbright-UB-1.21 fub-6.0.zip",
+    "url": "https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip",
+    "size": 238845,
+    "md5": "ca6862b2c96e65c15649cb4858998651",
+    "sha1": "b2068548fdd851920a8407c83b65276545689843"
   }
 }

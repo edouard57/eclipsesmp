@@ -46,6 +46,7 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        this.syncDefaultResourcePacks()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
@@ -111,9 +112,66 @@ class ProcessBuilder {
     }
 
     /**
+     * Resource pack files placed in the resourcepacks folder are not applied
+     * in-game until selected in options.txt. For File modules marked enabled
+     * by default in the distribution, add them to the active list so they
+     * work out of the box instead of requiring a manual toggle in-game.
+     */
+    syncDefaultResourcePacks(){
+        const modCfg = ConfigManager.getModConfiguration(this.server.rawServer.id).mods
+        const toEnable = []
+        for(const mdl of this.server.modules){
+            const artifactPath = mdl.rawModule.artifact != null ? mdl.rawModule.artifact.path : null
+            if(mdl.rawModule.type === Type.File && artifactPath != null && artifactPath.startsWith('resourcepacks/')){
+                if(ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessMavenIdentifier()], mdl.getRequired())){
+                    toEnable.push(path.basename(artifactPath))
+                }
+            }
+        }
+        if(toEnable.length === 0){
+            return
+        }
+
+        const optionsPath = path.join(this.gameDir, 'options.txt')
+        const lines = fs.existsSync(optionsPath) ? fs.readFileSync(optionsPath, 'utf-8').split('\n') : []
+
+        const idx = lines.findIndex(l => l.startsWith('resourcePacks:'))
+        let current = []
+        if(idx !== -1){
+            try {
+                current = JSON.parse(lines[idx].substring('resourcePacks:'.length))
+            } catch(err){
+                logger.warn('Could not parse existing resourcePacks in options.txt, resetting.', err)
+                current = []
+            }
+        }
+
+        let changed = false
+        for(const filename of toEnable){
+            const entry = `file/${filename}`
+            if(!current.includes(entry)){
+                current.push(entry)
+                changed = true
+            }
+        }
+
+        if(!changed){
+            return
+        }
+
+        const newLine = `resourcePacks:${JSON.stringify(current)}`
+        if(idx !== -1){
+            lines[idx] = newLine
+        } else {
+            lines.push(newLine)
+        }
+        fs.writeFileSync(optionsPath, lines.join('\n'))
+    }
+
+    /**
      * Get the platform specific classpath separator. On windows, this is a semicolon.
      * On Unix, this is a colon.
-     * 
+     *
      * @returns {string} The classpath separator for the current operating system.
      */
     static getClasspathSeparator() {

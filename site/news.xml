@@ -10,6 +10,26 @@
   <language>fr-fr</language>
 
   <item>
+    <title>Nouveaux mods : Jade, Simple Voice Chat, Carpet, Infinite Trading et TPA</title>
+    <link>https://eclipsesmp.cubi-mc.fr</link>
+    <guid isPermaLink="false">eclipsesmp-2026-07-12-newmods</guid>
+    <pubDate>Sun, 12 Jul 2026 20:40:00 +0200</pubDate>
+    <dc:creator>Eclipse SMP</dc:creator>
+    <slash:comments>0</slash:comments>
+    <content:encoded><![CDATA[
+      <p>Une nouvelle fournee de mods vient d'arriver, cote launcher et cote serveur :</p>
+      <ul>
+        <li>Jade -- affiche des infos sur les blocs et entites en les regardant</li>
+        <li>Simple Voice Chat -- discute a la voix directement en jeu avec les joueurs a proximite</li>
+        <li>Carpet -- reglages et outils avances pour le fonctionnement du serveur</li>
+        <li>Infinite Trading -- plus de limite sur les echanges avec les villageois</li>
+        <li>TPA -- demande a te teleporter vers un autre joueur avec /tpa</li>
+      </ul>
+      <p>Jade et Simple Voice Chat sont deja actives par defaut dans le launcher, mets simplement a jour tes mods depuis l'onglet correspondant.</p>
+    ]]></content:encoded>
+  </item>
+
+  <item>
     <title>Ouverture du serveur et premiere mise a jour du launcher</title>
     <link>https://eclipsesmp.cubi-mc.fr</link>
     <guid isPermaLink="false">eclipsesmp-2026-07-12-launch</guid>

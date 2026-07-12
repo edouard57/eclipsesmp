@@ -300,6 +300,34 @@
                     }
                 },
                 {
+                    "id": "modrinth:jade:26.2.9+fabric",
+                    "name": "[Confort] Jade",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1032857,
+                        "MD5": "51672733c8e4df8b3cb7e0e5b7fe57dd",
+                        "url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/dnZQ9Fgp/Jade-mc26.2-Fabric-26.2.9.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:simple-voice-chat:fabric-2.6.20+26.2",
+                    "name": "[Confort] Simple Voice Chat",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 5569123,
+                        "MD5": "dca7ed23d7e890a13f42412a8995f40d",
+                        "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/bvaEHE2T/voicechat-fabric-2.6.20%2B26.2.jar"
+                    }
+                },
+                {
                     "id": "modrinth:xaeros-minimap:fabric-26.2-26.2.0",
                     "name": "[Interface] Xaero's Minimap",
                     "type": "FabricMod",
@@ -424,6 +452,21 @@
                         "MD5": "8dbb914ed233d6e8183ce34eb26beaab",
                         "path": "shaderpacks/ComplementaryReimagined_r5.8.1.zip",
                         "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/yCCduG44/ComplementaryReimagined_r5.8.1.zip"
+                    }
+                },
+                {
+                    "id": "modrinth:fullbright-ub:6.0",
+                    "name": "Fullbright UB",
+                    "type": "File",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 238845,
+                        "MD5": "ca6862b2c96e65c15649cb4858998651",
+                        "path": "resourcepacks/Fullbright-UB-6.0.zip",
+                        "url": "https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip"
                     }
                 },
                 {

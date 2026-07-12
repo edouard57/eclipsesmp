@@ -21,6 +21,10 @@ FABRIC_PROFILE_SIZE = 2778
 SERVER_ADDRESS = "smp.cubi-mc.fr:25565"
 SERVER_ICON_URL = "https://cdn.jsdelivr.net/gh/edouard57/eclipsesmp@main/branding/server-icon.png"
 
+# Clean on-disk name (the Modrinth filename has a space in it). Must match
+# the resourcePacks entry ProcessBuilder writes into options.txt.
+FULLBRIGHT_FILENAME = "Fullbright-UB-6.0.zip"
+
 
 def fabric_mod_module(key, tier_prefix=None, required=True, default=True):
     m = MODS[key]
@@ -33,6 +37,23 @@ def fabric_mod_module(key, tier_prefix=None, required=True, default=True):
         "artifact": {
             "size": m["size"],
             "MD5": m["md5"],
+            "url": m["url"],
+        },
+    }
+
+
+def resourcepack_file_module(key, filename, required=False, default=True):
+    m = MODS[key]
+    title = MOD_TITLES.get(key, key)
+    return {
+        "id": f"modrinth:{key}:{m['version_number']}",
+        "name": title,
+        "type": "File",
+        "required": {"value": required, "def": default},
+        "artifact": {
+            "size": m["size"],
+            "MD5": m["md5"],
+            "path": f"resourcepacks/{filename}",
             "url": m["url"],
         },
     }
@@ -117,6 +138,8 @@ modules = [
     fabric_mod_module("mouse-tweaks", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("libipn", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("inventory-profiles-next", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("jade", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("simple-voice-chat", tier_prefix="[Confort]", required=False, default=True),
     # --- Interface (minimap / carte / menu des mods, optionnel, actif par defaut) ---
     fabric_mod_module("xaeros-minimap", tier_prefix="[Interface]", required=False, default=True),
     fabric_mod_module("xaeros-world-map", tier_prefix="[Interface]", required=False, default=True),
@@ -129,6 +152,7 @@ modules = [
     fabric_mod_module("iris", tier_prefix="[PC puissant]", required=False, default=False),
     fabric_mod_module("distanthorizons", tier_prefix="[PC puissant]", required=False, default=False),
     shader_file_module("complementary-reimagined", "shaderpacks/ComplementaryReimagined_r5.8.1.zip"),
+    resourcepack_file_module("fullbright-ub", FULLBRIGHT_FILENAME, required=False, default=True),
     {
         "id": "eclipse-smp:servers.dat",
         "name": "Serveur pre-rempli dans le menu multijoueur",
