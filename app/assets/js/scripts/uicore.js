@@ -37,6 +37,10 @@ webFrame.setVisualZoomLevelLimits(1, 1)
 
 // Initialize auto updates in production environments.
 let updateCheckListener
+// Set right before sending a manual (button-triggered) update check, so we
+// only pop up "you're up to date" / "check failed" for that, not for the
+// silent periodic background check.
+let manualUpdateCheck = false
 if(!isDev){
     ipcRenderer.on('autoUpdateNotification', (event, arg, info) => {
         switch(arg){
@@ -66,6 +70,16 @@ if(!isDev){
             case 'update-not-available':
                 loggerAutoUpdater.info('No new update found.')
                 settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
+                if(manualUpdateCheck){
+                    setOverlayContent(
+                        Lang.queryJS('uicore.autoUpdate.upToDateTitle'),
+                        Lang.queryJS('uicore.autoUpdate.upToDateDesc'),
+                        Lang.queryJS('overlay.dismiss')
+                    )
+                    setOverlayHandler(null)
+                    toggleOverlay(true)
+                    manualUpdateCheck = false
+                }
                 break
             case 'ready':
                 updateCheckListener = setInterval(() => {
@@ -83,6 +97,17 @@ if(!isDev){
                         loggerAutoUpdater.error('Error during update check..', info)
                         loggerAutoUpdater.debug('Error Code:', info.code)
                     }
+                }
+                settingsUpdateButtonStatus(Lang.queryJS('uicore.autoUpdate.checkForUpdatesButton'))
+                if(manualUpdateCheck){
+                    setOverlayContent(
+                        Lang.queryJS('uicore.autoUpdate.updateCheckFailedTitle'),
+                        Lang.queryJS('uicore.autoUpdate.updateCheckFailedDesc'),
+                        Lang.queryJS('overlay.dismiss')
+                    )
+                    setOverlayHandler(null)
+                    toggleOverlay(true)
+                    manualUpdateCheck = false
                 }
                 break
             default:

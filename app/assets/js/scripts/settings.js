@@ -1543,6 +1543,7 @@ function populateSettingsUpdateInformation(data){
         populateVersionInformation(remote.app.getVersion(), settingsUpdateVersionValue, settingsUpdateVersionTitle, settingsUpdateVersionCheck)
         settingsUpdateButtonStatus(Lang.queryJS('settings.updates.checkForUpdatesButton'), false, () => {
             if(!isDev){
+                manualUpdateCheck = true
                 ipcRenderer.send('autoUpdateAction', 'checkForUpdate')
                 settingsUpdateButtonStatus(Lang.queryJS('settings.updates.checkingForUpdatesButton'), true)
             }

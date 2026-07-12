@@ -1,6 +1,6 @@
 {
   "name": "eclipse-smp-launcher",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "productName": "Eclipse SMP Launcher",
   "description": "Launcher Minecraft dedie au serveur Eclipse SMP (base sur HeliosLauncher)",
   "author": "Eclipse SMP",

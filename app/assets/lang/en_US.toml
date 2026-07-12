@@ -300,6 +300,10 @@ selectAnotherAccountButton = "Selectionner un autre compte"
 checkingForUpdateButton = "Verification des mises a jour..."
 installNowButton = "Installer maintenant"
 checkForUpdatesButton = "Verifier les mises a jour"
+upToDateTitle = "Tu es a jour"
+upToDateDesc = "Tu utilises deja la derniere version du launcher."
+updateCheckFailedTitle = "Verification impossible"
+updateCheckFailedDesc = "Impossible de verifier les mises a jour pour le moment. Reessaie plus tard."
 
 [js.auth.microsoft.error]
 noProfileTitle = "Erreur pendant la connexion :<br>Profil non configure"
