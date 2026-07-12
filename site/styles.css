@@ -206,38 +206,6 @@ a { color: inherit; }
   font-size: 18px;
 }
 
-.ip-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 10px 12px 20px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--bg-elevated);
-  margin-bottom: 28px;
-}
-.ip-chip code {
-  font-family: var(--font-mono);
-  font-size: 15px;
-  color: var(--ink);
-}
-.ip-chip button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: none;
-  background: rgba(139,108,242,0.16);
-  color: var(--corona-violet);
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.ip-chip button:hover { background: var(--corona-violet); color: #fff; }
-.ip-chip button svg { width: 14px; height: 14px; }
-
 .hero-ctas {
   display: flex;
   align-items: center;
