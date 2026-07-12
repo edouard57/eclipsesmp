@@ -961,7 +961,7 @@ async function loadNews(){
     const distroData = await DistroAPI.getDistribution()
     if(!distroData.rawDistribution.rss) {
         loggerLanding.debug('No RSS feed provided.')
-        return null
+        return { articles: [] }
     }
 
     const promise = new Promise((resolve, reject) => {
