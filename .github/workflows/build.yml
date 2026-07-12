@@ -10,6 +10,13 @@ jobs:
       contents: write
 
     strategy:
+      # max-parallel: 1 -- electron-builder's GitHub publisher has a race
+      # window when multiple platforms publish to the same tag at once
+      # (each independently checks "does a release for this tag exist yet"
+      # and, seeing none, creates its own -- resulting in 2 releases for
+      # one tag, each with only that job's assets). Serializing avoids it
+      # entirely; a slower CI run beats a broken/incomplete release.
+      max-parallel: 1
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
@@ -59,13 +66,6 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v6
 
-      # NOTE: electron-builder's "find existing draft" lookup for a given
-      # tag has its own race window across the 3 parallel matrix jobs --
-      # it's possible (rarely) for 2 jobs to each create their own draft
-      # instead of sharing one, leaving an incomplete duplicate. `gh
-      # release edit <tag>` only touches one of them. If a release is
-      # missing assets after this job, check for and delete a duplicate
-      # draft with the same tag: `gh release list` / `gh api repos/.../releases`.
       - name: Publish the draft release created by the matrix builds
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
