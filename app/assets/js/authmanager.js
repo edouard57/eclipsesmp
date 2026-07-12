@@ -9,6 +9,7 @@
  * @module authmanager
  */
 // Requirements
+const got                    = require('got')
 const ConfigManager          = require('./configmanager')
 const { LoggerUtil }         = require('helios-core')
 const { RestResponseStatus } = require('helios-core/common')
@@ -170,10 +171,34 @@ exports.addMojangAccount = async function(username, password) {
 const validUsername = /^[a-zA-Z0-9_]{3,16}$/
 
 /**
+ * Check whether a username belongs to an existing Mojang/Microsoft (premium)
+ * account. This is a courtesy check only -- the server (EasyAuth) is the
+ * actual enforcement point, since a modified/other client could skip this.
+ *
+ * @param {string} username The username to check.
+ * @returns {Promise.<boolean>} True if a premium account owns this name.
+ */
+async function isPremiumUsername(username){
+    try {
+        const res = await got.get(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`, {
+            timeout: { request: 4000 },
+            throwHttpErrors: false
+        })
+        return res.statusCode === 200
+    } catch(err) {
+        // Mojang API unreachable: fail open. The server-side check remains
+        // authoritative, this is only meant to warn the player early.
+        log.warn('Unable to check if username is premium, allowing:', err.message)
+        return false
+    }
+}
+
+/**
  * Add an offline (non-premium) account. No network authentication is
  * performed; the username is validated locally and a stable offline UUID
  * is derived from it. The Eclipse SMP server (EasyAuth) is responsible for
- * preventing username squatting/impersonation at connection time.
+ * preventing username squatting/impersonation at connection time -- this
+ * is only an early, best-effort warning to the player.
  *
  * @param {string} username The chosen username.
  * @returns {Promise.<Object>} Promise which resolves the created account object.
@@ -184,6 +209,12 @@ exports.addOfflineAccount = async function(username){
         return Promise.reject({
             title: Lang.queryJS('auth.offline.error.invalidUsernameTitle'),
             desc: Lang.queryJS('auth.offline.error.invalidUsernameDesc')
+        })
+    }
+    if(await isPremiumUsername(trimmed)){
+        return Promise.reject({
+            title: Lang.queryJS('auth.offline.error.premiumUsernameTitle'),
+            desc: Lang.queryJS('auth.offline.error.premiumUsernameDesc')
         })
     }
     const ret = ConfigManager.addOfflineAuthAccount(trimmed)

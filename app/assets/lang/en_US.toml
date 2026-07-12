@@ -346,3 +346,5 @@ unknownErrorDesc = "Une erreur inconnue est survenue. Consulte la console pour p
 [js.auth.offline.error]
 invalidUsernameTitle = "Pseudo invalide"
 invalidUsernameDesc = "Le pseudo doit faire entre 3 et 16 caracteres : lettres, chiffres et underscore uniquement."
+premiumUsernameTitle = "Ce pseudo appartient a un compte premium"
+premiumUsernameDesc = "Un compte Minecraft premium existe deja avec ce pseudo. Si c'est le tien, connecte-toi avec Microsoft au lieu de creer un compte non-premium. Sinon, choisis un autre pseudo."
