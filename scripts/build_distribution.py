@@ -103,12 +103,27 @@ modules = [
     fabric_mod_module("sodium", required=True),
     fabric_mod_module("lithium", required=True),
     fabric_mod_module("ferrite-core", required=True),
+    # Gameplay feature required on both client and server (elytra trims need
+    # to be in sync, and the mod needs Fabric Language Kotlin as a library).
+    fabric_mod_module("fabric-language-kotlin", required=True),
+    fabric_mod_module("elytra-trims", required=True),
     # --- Confort (optional, on by default even on weak PCs: pure optimizations
     #     or QoL with no real tradeoff, same spirit as the required core above) ---
     fabric_mod_module("dynamic-fps", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("jei", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("entityculling", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("immediatelyfast", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("appleskin", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("mouse-tweaks", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("libipn", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("inventory-profiles-next", tier_prefix="[Confort]", required=False, default=True),
+    # --- Interface (minimap / carte / menu des mods, optionnel, actif par defaut) ---
+    fabric_mod_module("xaeros-minimap", tier_prefix="[Interface]", required=False, default=True),
+    fabric_mod_module("xaeros-world-map", tier_prefix="[Interface]", required=False, default=True),
+    fabric_mod_module("placeholder-api", tier_prefix="[Interface]", required=False, default=True),
+    fabric_mod_module("modmenu", tier_prefix="[Interface]", required=False, default=True),
+    # --- Visuel (purement cosmetique, desactive par defaut car question de gout) ---
+    fabric_mod_module("not-enough-animations", tier_prefix="[Visuel]", required=False, default=False),
     # --- PC puissant (optional, off by default: real CPU/GPU/RAM cost) ---
     fabric_mod_module("c2me-fabric", tier_prefix="[PC puissant]", required=False, default=False),
     fabric_mod_module("iris", tier_prefix="[PC puissant]", required=False, default=False),

@@ -160,6 +160,34 @@
                     }
                 },
                 {
+                    "id": "modrinth:fabric-language-kotlin:1.13.12+kotlin.2.4.0",
+                    "name": "Fabric Language Kotlin",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 8076848,
+                        "MD5": "dff437aac8aae6eb76ae9db6b6ea9cb0",
+                        "url": "https://cdn.modrinth.com/data/Ha28R6CL/versions/Pd0xrHCw/fabric-language-kotlin-1.13.12%2Bkotlin.2.4.0.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:elytra-trims:4.8.2",
+                    "name": "Elytra Trims",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 819419,
+                        "MD5": "f7f172f3695b5c66694e153de3b5c217",
+                        "url": "https://cdn.modrinth.com/data/XpzGz7KD/versions/tKGLQKLD/elytratrims-fabric-4.8.2%2B26.2.jar"
+                    }
+                },
+                {
                     "id": "modrinth:dynamic-fps:3.11.9",
                     "name": "[Confort] Dynamic FPS",
                     "type": "FabricMod",
@@ -213,6 +241,132 @@
                         "size": 91422,
                         "MD5": "d7a174061600c61077e4270136de2153",
                         "url": "https://cdn.modrinth.com/data/5ZwdcRci/versions/uJHxuQxy/ImmediatelyFast-Fabric-1.16.2%2B26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:appleskin:3.0.10+mc26.2",
+                    "name": "[Confort] AppleSkin",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 181627,
+                        "MD5": "5aa3c692cc889ef4844b1412d6b86c40",
+                        "url": "https://cdn.modrinth.com/data/EsAfCjCV/versions/uo5bAN1Y/appleskin-fabric-mc26.2-3.0.10.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:mouse-tweaks:26.2-2.31-fabric",
+                    "name": "[Confort] Mouse Tweaks",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 75872,
+                        "MD5": "ea54d30650e306e2cbc6a4b9910d7a9b",
+                        "url": "https://cdn.modrinth.com/data/aC3cM3Vq/versions/jOiTBIaB/MouseTweaks-fabric-mc26.2-2.31.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:libipn:fabric-26.2-6.8.2",
+                    "name": "[Confort] libIPN",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 630245,
+                        "MD5": "5a330d91ae90f0098820d9310fc9e75b",
+                        "url": "https://cdn.modrinth.com/data/onSQdWhM/versions/uRP0v1wY/libIPN-fabric-26.2-6.8.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:inventory-profiles-next:fabric-26.2-2.3.5",
+                    "name": "[Confort] Inventory Profiles Next",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1461780,
+                        "MD5": "782f9f8a62b067f8657319951abc717a",
+                        "url": "https://cdn.modrinth.com/data/O7RBXm3n/versions/Eg2NTcSJ/InventoryProfilesNext-fabric-26.2-2.3.5.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:xaeros-minimap:fabric-26.2-26.2.0",
+                    "name": "[Interface] Xaero's Minimap",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 2209737,
+                        "MD5": "6f4695223cfdcf826a444d9acf29a796",
+                        "url": "https://cdn.modrinth.com/data/1bokaNcj/versions/qH1mI57E/xaerominimap-fabric-26.2-26.2.0.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:xaeros-world-map:fabric-26.2-1.42.0",
+                    "name": "[Interface] Xaero's World Map",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1460879,
+                        "MD5": "5a4ccbafa5660f4d6e55aac9ca2dd57f",
+                        "url": "https://cdn.modrinth.com/data/NcUtCpym/versions/JN72jos8/xaeroworldmap-fabric-26.2-1.42.0.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:placeholder-api:3.1.0-beta.1+26.2",
+                    "name": "[Interface] Text Placeholder API",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 254973,
+                        "MD5": "2acee95d87c4e626781880017e3ee03d",
+                        "url": "https://cdn.modrinth.com/data/eXts2L7r/versions/NDqH16LT/placeholder-api-3.1.0-beta.1%2B26.2.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:modmenu:20.0.1",
+                    "name": "[Interface] Mod Menu",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 614002,
+                        "MD5": "87749d37d34f7e3b9d41f93135474346",
+                        "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/njXb639R/modmenu-20.0.1.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:not-enough-animations:1.12.4",
+                    "name": "[Visuel] Not Enough Animations",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": false
+                    },
+                    "artifact": {
+                        "size": 1937831,
+                        "MD5": "ac5b1243958e7f14862ee13b55408a01",
+                        "url": "https://cdn.modrinth.com/data/MPCX6s5C/versions/67xQnLDS/notenoughanimations-fabric-1.12.4-mc26.2.jar"
                     }
                 },
                 {

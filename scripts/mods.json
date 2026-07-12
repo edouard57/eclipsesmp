@@ -115,5 +115,93 @@
     "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/WyzzzTmr/jei-26.2-fabric-30.10.0.60.jar",
     "size": 1662516,
     "md5": "0ffa763c5884be324bc2708f13abdf07"
+  },
+  "elytra-trims": {
+    "project_id": "XpzGz7KD",
+    "version_number": "4.8.2",
+    "filename": "elytratrims-fabric-4.8.2+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/XpzGz7KD/versions/tKGLQKLD/elytratrims-fabric-4.8.2%2B26.2.jar",
+    "size": 819419,
+    "md5": "f7f172f3695b5c66694e153de3b5c217"
+  },
+  "fabric-language-kotlin": {
+    "project_id": "Ha28R6CL",
+    "version_number": "1.13.12+kotlin.2.4.0",
+    "filename": "fabric-language-kotlin-1.13.12+kotlin.2.4.0.jar",
+    "url": "https://cdn.modrinth.com/data/Ha28R6CL/versions/Pd0xrHCw/fabric-language-kotlin-1.13.12%2Bkotlin.2.4.0.jar",
+    "size": 8076848,
+    "md5": "dff437aac8aae6eb76ae9db6b6ea9cb0"
+  },
+  "appleskin": {
+    "project_id": "EsAfCjCV",
+    "version_number": "3.0.10+mc26.2",
+    "filename": "appleskin-fabric-mc26.2-3.0.10.jar",
+    "url": "https://cdn.modrinth.com/data/EsAfCjCV/versions/uo5bAN1Y/appleskin-fabric-mc26.2-3.0.10.jar",
+    "size": 181627,
+    "md5": "5aa3c692cc889ef4844b1412d6b86c40"
+  },
+  "mouse-tweaks": {
+    "project_id": "aC3cM3Vq",
+    "version_number": "26.2-2.31-fabric",
+    "filename": "MouseTweaks-fabric-mc26.2-2.31.jar",
+    "url": "https://cdn.modrinth.com/data/aC3cM3Vq/versions/jOiTBIaB/MouseTweaks-fabric-mc26.2-2.31.jar",
+    "size": 75872,
+    "md5": "ea54d30650e306e2cbc6a4b9910d7a9b"
+  },
+  "inventory-profiles-next": {
+    "project_id": "O7RBXm3n",
+    "version_number": "fabric-26.2-2.3.5",
+    "filename": "InventoryProfilesNext-fabric-26.2-2.3.5.jar",
+    "url": "https://cdn.modrinth.com/data/O7RBXm3n/versions/Eg2NTcSJ/InventoryProfilesNext-fabric-26.2-2.3.5.jar",
+    "size": 1461780,
+    "md5": "782f9f8a62b067f8657319951abc717a"
+  },
+  "libipn": {
+    "project_id": "onSQdWhM",
+    "version_number": "fabric-26.2-6.8.2",
+    "filename": "libIPN-fabric-26.2-6.8.2.jar",
+    "url": "https://cdn.modrinth.com/data/onSQdWhM/versions/uRP0v1wY/libIPN-fabric-26.2-6.8.2.jar",
+    "size": 630245,
+    "md5": "5a330d91ae90f0098820d9310fc9e75b"
+  },
+  "xaeros-minimap": {
+    "project_id": "1bokaNcj",
+    "version_number": "fabric-26.2-26.2.0",
+    "filename": "xaerominimap-fabric-26.2-26.2.0.jar",
+    "url": "https://cdn.modrinth.com/data/1bokaNcj/versions/qH1mI57E/xaerominimap-fabric-26.2-26.2.0.jar",
+    "size": 2209737,
+    "md5": "6f4695223cfdcf826a444d9acf29a796"
+  },
+  "xaeros-world-map": {
+    "project_id": "NcUtCpym",
+    "version_number": "fabric-26.2-1.42.0",
+    "filename": "xaeroworldmap-fabric-26.2-1.42.0.jar",
+    "url": "https://cdn.modrinth.com/data/NcUtCpym/versions/JN72jos8/xaeroworldmap-fabric-26.2-1.42.0.jar",
+    "size": 1460879,
+    "md5": "5a4ccbafa5660f4d6e55aac9ca2dd57f"
+  },
+  "modmenu": {
+    "project_id": "mOgUt4GM",
+    "version_number": "20.0.1",
+    "filename": "modmenu-20.0.1.jar",
+    "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/njXb639R/modmenu-20.0.1.jar",
+    "size": 614002,
+    "md5": "87749d37d34f7e3b9d41f93135474346"
+  },
+  "placeholder-api": {
+    "project_id": "eXts2L7r",
+    "version_number": "3.1.0-beta.1+26.2",
+    "filename": "placeholder-api-3.1.0-beta.1+26.2.jar",
+    "url": "https://cdn.modrinth.com/data/eXts2L7r/versions/NDqH16LT/placeholder-api-3.1.0-beta.1%2B26.2.jar",
+    "size": 254973,
+    "md5": "2acee95d87c4e626781880017e3ee03d"
+  },
+  "not-enough-animations": {
+    "project_id": "MPCX6s5C",
+    "version_number": "1.12.4",
+    "filename": "notenoughanimations-fabric-1.12.4-mc26.2.jar",
+    "url": "https://cdn.modrinth.com/data/MPCX6s5C/versions/67xQnLDS/notenoughanimations-fabric-1.12.4-mc26.2.jar",
+    "size": 1937831,
+    "md5": "ac5b1243958e7f14862ee13b55408a01"
   }
 }

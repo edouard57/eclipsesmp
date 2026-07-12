@@ -9,5 +9,16 @@
   "c2me-fabric": "Concurrent Chunk Management Engine (Fabric)",
   "iris": "Iris Shaders",
   "distanthorizons": "Distant Horizons",
-  "jei": "Just Enough Items (JEI)"
+  "jei": "Just Enough Items (JEI)",
+  "elytra-trims": "Elytra Trims",
+  "fabric-language-kotlin": "Fabric Language Kotlin",
+  "appleskin": "AppleSkin",
+  "mouse-tweaks": "Mouse Tweaks",
+  "inventory-profiles-next": "Inventory Profiles Next",
+  "libipn": "libIPN",
+  "xaeros-minimap": "Xaero's Minimap",
+  "xaeros-world-map": "Xaero's World Map",
+  "modmenu": "Mod Menu",
+  "placeholder-api": "Text Placeholder API",
+  "not-enough-animations": "Not Enough Animations"
 }
