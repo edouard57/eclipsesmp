@@ -37,3 +37,15 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
         run: npm run dist -- --publish always
         shell: bash
+
+      - name: Upload installer as workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+          if-no-files-found: warn
+          retention-days: 14
