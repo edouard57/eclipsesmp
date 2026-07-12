@@ -3752,6 +3752,16 @@ input:checked + .toggleSwitchSlider:before {
     width: 50px;
 }
 
+/* Small icon shown next to the selected server name on the landing page. */
+.serverSelectionIcon {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 6px;
+    margin-bottom: 2px;
+}
+
 /* Content container for the server listing's details. */
 .serverListingDetails {
     display: flex;
