@@ -134,8 +134,8 @@ modules = [
         "name": "Serveur pre-rempli dans le menu multijoueur",
         "type": "File",
         "artifact": {
-            "size": 85,
-            "MD5": "73414b3c9ea074adb9daa84813509413",
+            "size": 12586,
+            "MD5": "de48c9d91966da0abcda7f32bc2709e3",
             "path": "servers.dat",
             "url": "https://raw.githubusercontent.com/edouard57/eclipsesmp/main/branding/servers.dat",
         },
