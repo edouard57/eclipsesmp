@@ -54,4 +54,10 @@ publish:
   provider: 'github'
   owner: 'edouard57'
   repo: 'eclipsesmp'
-  releaseType: 'release'
+  # Keep as draft during CI: the 3 platform builds run in parallel and each
+  # publish to the SAME release. Drafts don't create a real git tag, so
+  # concurrent jobs can all find/update the same draft safely. A real
+  # ("release") tag is created eagerly and races between parallel jobs
+  # (one job's create fails with 422 "already_exists" if another job's
+  # create lands microseconds earlier). The workflow's "publish-release"
+  # job un-drafts it once, after all 3 platforms finish.
