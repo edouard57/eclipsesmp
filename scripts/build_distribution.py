@@ -146,8 +146,12 @@ distribution = {
             "mainServer": True,
             "autoconnect": True,
             "javaOptions": {
-                "supported": ">=21",
-                "suggestedMajor": 21,
+                # MC 26.2's own JVM arg template includes
+                # --sun-misc-unsafe-memory-access=allow, unrecognized by JDK 21
+                # ("Unrecognized option" -> exit code 1, silent to the user).
+                # Verified working on JDK 25; require at least that.
+                "supported": ">=25",
+                "suggestedMajor": 25,
                 "ram": {"recommended": 4096, "minimum": 2048},
             },
             "modules": modules,
