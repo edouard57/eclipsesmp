@@ -464,6 +464,15 @@ ADMIN_PAGE = r"""<!doctype html>
     cursor: pointer; transition: border-color .15s, color .15s;
   }
   .logout-btn:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .server-pill {
+    display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono);
+    font-size: 11.5px; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px;
+  }
+  .server-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-faint); }
+  .server-pill.online .server-pill-dot { background: #7cffb0; box-shadow: 0 0 6px 1px rgba(124,255,176,0.5); }
+  .server-pill.offline .server-pill-dot { background: #ff8080; }
 
   .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 28px; }
   .kpi { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
@@ -481,8 +490,44 @@ ADMIN_PAGE = r"""<!doctype html>
     outline: none; width: 180px;
   }
   .search-input:focus { border-color: var(--violet); }
+  .section-actions { display: flex; align-items: center; gap: 10px; }
+  .export-link {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim);
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px;
+    text-decoration: none; white-space: nowrap; transition: border-color .15s, color .15s;
+  }
+  .export-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  .stack { display: flex; flex-direction: column; gap: 32px; }
+  .stack section { margin-bottom: 0; }
 
   .panel { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+
+  .versions-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim);
+  }
+  .versions-row + .versions-row { border-top: 1px solid var(--line); }
+  .versions-row .v-label { min-width: 56px; color: var(--ink); }
+  .versions-row .v-bar-wrap { flex: 1; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; height: 6px; }
+  .versions-row .v-bar { height: 100%; background: linear-gradient(90deg, var(--violet), var(--gold)); }
+  .versions-row .v-count { color: var(--ink-faint); min-width: 20px; text-align: right; }
+
+  #toast-container {
+    position: fixed; bottom: 20px; right: 20px; z-index: 50;
+    display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+  }
+  .toast {
+    background: var(--bg-card); border: 1px solid var(--line); border-left: 3px solid #ff8080;
+    border-radius: 8px; padding: 12px 16px; font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    animation: toast-in .25s ease-out;
+    max-width: 300px;
+  }
+  .toast.out { animation: toast-out .25s ease-in forwards; }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes toast-out { to { opacity: 0; transform: translateY(8px); } }
+  @media (prefers-reduced-motion: reduce) { .toast, .toast.out { animation: none; } }
 
   .chart-wrap { padding: 18px 18px 8px; }
   .chart-wrap svg { width: 100%; height: 140px; display: block; overflow: visible; }
@@ -546,7 +591,13 @@ ADMIN_PAGE = r"""<!doctype html>
       <h1>Eclipse<span>SMP</span></h1>
       <span class="sub">panel admin</span>
     </div>
-    <button class="logout-btn" id="logout-btn">Se deconnecter</button>
+    <div class="topbar-right">
+      <span class="server-pill" id="server-pill" title="Statut du serveur">
+        <span class="server-pill-dot"></span>
+        <span id="server-pill-text">verification...</span>
+      </span>
+      <button class="logout-btn" id="logout-btn">Se deconnecter</button>
+    </div>
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -567,7 +618,10 @@ ADMIN_PAGE = r"""<!doctype html>
     <section>
       <div class="section-head">
         <h2>Derniers lancements</h2>
-        <input class="search-input" id="launch-search" placeholder="Filtrer par pseudo...">
+        <div class="section-actions">
+          <input class="search-input" id="launch-search" placeholder="Filtrer par pseudo...">
+          <a class="export-link" href="/admin/api/launches.csv">Exporter CSV</a>
+        </div>
       </div>
       <div class="panel">
         <table>
@@ -578,20 +632,33 @@ ADMIN_PAGE = r"""<!doctype html>
       </div>
     </section>
 
-    <section>
-      <div class="section-head"><h2>Top joueurs</h2></div>
-      <div class="panel">
-        <table>
-          <thead><tr><th></th><th>Pseudo</th><th>Lancements</th></tr></thead>
-          <tbody id="leaderboard-body"></tbody>
-        </table>
-        <div class="empty" id="leaderboard-empty" style="display:none">Pas encore de donnees.</div>
-      </div>
-    </section>
+    <div class="stack">
+      <section>
+        <div class="section-head"><h2>Top joueurs</h2></div>
+        <div class="panel">
+          <table>
+            <thead><tr><th></th><th>Pseudo</th><th>Lancements</th></tr></thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+          <div class="empty" id="leaderboard-empty" style="display:none">Pas encore de donnees.</div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><h2>Versions du launcher</h2></div>
+        <div class="panel">
+          <div id="versions-rows"></div>
+          <div class="empty" id="versions-empty" style="display:none">Pas encore de donnees.</div>
+        </div>
+      </section>
+    </div>
   </div>
 
   <section>
-    <div class="section-head"><h2>Rapports de crash</h2></div>
+    <div class="section-head">
+      <h2>Rapports de crash</h2>
+      <a class="export-link" href="/admin/api/crashes.csv">Exporter CSV</a>
+    </div>
     <div class="panel">
       <table>
         <thead><tr><th>Pseudo</th><th>Compte</th><th>Version</th><th>Date</th><th>Rapport</th></tr></thead>
@@ -600,6 +667,8 @@ ADMIN_PAGE = r"""<!doctype html>
       <div class="empty" id="crashes-empty" style="display:none">Aucun crash signale. Bon signe.</div>
     </div>
   </section>
+
+  <div id="toast-container"></div>
 </div>
 
 <script>
@@ -631,7 +700,13 @@ function connectLive(){
     wsDot.classList.remove('offline');
     wsDot.title = 'Connecte en direct';
   };
-  ws.onmessage = () => { loadAll(); };
+  ws.onmessage = (event) => {
+    loadAll();
+    try {
+      const msg = JSON.parse(event.data);
+      if(msg.type === 'crash'){ showToast('Un joueur vient de crasher -- voir Rapports de crash.'); }
+    } catch(e){ /* ignore malformed pings */ }
+  };
   ws.onclose = () => {
     wsDot.classList.add('offline');
     wsDot.title = 'Deconnecte, reconnexion...';
@@ -643,16 +718,52 @@ function connectLive(){
   ws.onerror = () => ws.close();
 }
 
+let serverStatusTimer = null;
+
 function showDashboard(){
   loginView.style.display = 'none';
   dashView.style.display = 'block';
   loadAll();
   connectLive();
+  pollServerStatus();
+  serverStatusTimer = setInterval(pollServerStatus, 30000);
 }
 function showLogin(){
   loginView.style.display = 'flex';
   dashView.style.display = 'none';
   if(ws){ ws.onclose = null; ws.close(); ws = null; }
+  if(serverStatusTimer){ clearInterval(serverStatusTimer); serverStatusTimer = null; }
+}
+
+function showToast(message){
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 300);
+  }, 6000);
+}
+
+async function pollServerStatus(){
+  const pill = document.getElementById('server-pill');
+  const text = document.getElementById('server-pill-text');
+  try {
+    const res = await fetch('/status');
+    const data = await res.json();
+    if(data.online){
+      pill.classList.add('online'); pill.classList.remove('offline');
+      text.textContent = `en ligne -- ${data.players_online}/${data.players_max}`;
+    } else {
+      pill.classList.add('offline'); pill.classList.remove('online');
+      text.textContent = 'hors ligne';
+    }
+  } catch(e){
+    pill.classList.add('offline'); pill.classList.remove('online');
+    text.textContent = 'inconnu';
+  }
 }
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -715,7 +826,30 @@ function renderLeaderboard(rows){
   const tbody = document.getElementById('leaderboard-body');
   document.getElementById('leaderboard-empty').style.display = rows.length ? 'none' : 'block';
   tbody.innerHTML = rows.map((r, i) => `
-    <tr><td class="rank">${i+1}</td><td class="user">${esc(r.username)} ${badge(r.account_type)}</td><td>${r.launches}</td></tr>
+    <tr class="lb-row" data-user="${esc(r.username)}" style="cursor:pointer" title="Filtrer les lancements de ${esc(r.username)}">
+      <td class="rank">${i+1}</td><td class="user">${esc(r.username)} ${badge(r.account_type)}</td><td>${r.launches}</td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('.lb-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const search = document.getElementById('launch-search');
+      search.value = row.dataset.user;
+      search.dispatchEvent(new Event('input'));
+      search.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+}
+
+function renderVersions(rows){
+  const container = document.getElementById('versions-rows');
+  document.getElementById('versions-empty').style.display = rows.length ? 'none' : 'block';
+  const max = Math.max(1, ...rows.map(r => r.count));
+  container.innerHTML = rows.map(r => `
+    <div class="versions-row">
+      <span class="v-label">v${esc(r.launcher_version)}</span>
+      <span class="v-bar-wrap"><span class="v-bar" style="width:${(r.count/max*100).toFixed(0)}%"></span></span>
+      <span class="v-count">${r.count}</span>
+    </div>
   `).join('');
 }
 
@@ -745,11 +879,12 @@ document.getElementById('launch-search').addEventListener('input', (e) => {
 });
 
 async function loadAll(){
-  const [stats, days, launches, leaderboard, crashes] = await Promise.all([
+  const [stats, days, launches, leaderboard, versions, crashes] = await Promise.all([
     fetch('/admin/api/stats').then(r => r.json()),
     fetch('/admin/api/timeseries').then(r => r.json()),
     fetch('/admin/api/launches?limit=100').then(r => r.json()),
     fetch('/admin/api/leaderboard').then(r => r.json()),
+    fetch('/admin/api/versions').then(r => r.json()),
     fetch('/admin/api/crashes?limit=50').then(r => r.json()),
   ]);
   renderKpis(stats);
@@ -757,6 +892,7 @@ async function loadAll(){
   allLaunches = launches;
   renderLaunches(launches);
   renderLeaderboard(leaderboard);
+  renderVersions(versions);
   renderCrashes(crashes);
 }
 
@@ -880,10 +1016,16 @@ class Handler(BaseHTTPRequestHandler):
                 self._handle_timeseries()
             elif path == "/admin/api/leaderboard":
                 self._handle_leaderboard()
+            elif path == "/admin/api/versions":
+                self._handle_versions()
             elif path == "/admin/api/launches":
                 self._handle_launches()
+            elif path == "/admin/api/launches.csv":
+                self._handle_launches_csv()
             elif path.startswith("/admin/api/crashes/") and path.endswith("/download"):
                 self._handle_crash_download(path)
+            elif path == "/admin/api/crashes.csv":
+                self._handle_crashes_csv()
             elif path == "/admin/api/crashes":
                 self._handle_crashes()
             else:
@@ -1065,6 +1207,15 @@ class Handler(BaseHTTPRequestHandler):
         conn.close()
         self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
 
+    def _handle_versions(self):
+        conn = get_db()
+        rows = conn.execute("""
+            SELECT launcher_version, COUNT(*) as count
+            FROM launches GROUP BY launcher_version ORDER BY count DESC
+        """).fetchall()
+        conn.close()
+        self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
+
     def _limit(self):
         try:
             return min(int(self._query.get("limit", ["50"])[0]), 200)
@@ -1080,6 +1231,43 @@ class Handler(BaseHTTPRequestHandler):
         ).fetchall()
         conn.close()
         self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
+
+    @staticmethod
+    def _csv_escape(value):
+        value = "" if value is None else str(value)
+        if any(c in value for c in (",", '"', "\n")):
+            value = '"' + value.replace('"', '""') + '"'
+        return value
+
+    def _handle_launches_csv(self):
+        conn = get_db()
+        rows = conn.execute(
+            "SELECT username, account_type, launcher_version, ip, created_at "
+            "FROM launches ORDER BY id DESC"
+        ).fetchall()
+        conn.close()
+        lines = ["username,account_type,launcher_version,ip,created_at"]
+        for r in rows:
+            lines.append(",".join(self._csv_escape(r[k]) for k in
+                         ("username", "account_type", "launcher_version", "ip", "created_at")))
+        body = ("\n".join(lines) + "\n").encode("utf-8")
+        self._send(200, body, "text/csv; charset=utf-8",
+                   {"Content-Disposition": 'attachment; filename="launches.csv"'})
+
+    def _handle_crashes_csv(self):
+        conn = get_db()
+        rows = conn.execute(
+            "SELECT id, username, account_type, launcher_version, filename, created_at "
+            "FROM crashes ORDER BY id DESC"
+        ).fetchall()
+        conn.close()
+        lines = ["id,username,account_type,launcher_version,filename,created_at"]
+        for r in rows:
+            lines.append(",".join(self._csv_escape(r[k]) for k in
+                         ("id", "username", "account_type", "launcher_version", "filename", "created_at")))
+        body = ("\n".join(lines) + "\n").encode("utf-8")
+        self._send(200, body, "text/csv; charset=utf-8",
+                   {"Content-Disposition": 'attachment; filename="crashes.csv"'})
 
     def _handle_crashes(self):
         limit = self._limit()
