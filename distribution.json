@@ -188,20 +188,6 @@
                     }
                 },
                 {
-                    "id": "modrinth:stackable:2.1.1",
-                    "name": "Stackable",
-                    "type": "FabricMod",
-                    "required": {
-                        "value": true,
-                        "def": true
-                    },
-                    "artifact": {
-                        "size": 37267,
-                        "MD5": "a7112b8ba12f31fd537cea25a811a8e9",
-                        "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar"
-                    }
-                },
-                {
                     "id": "modrinth:dynamic-fps:3.11.9",
                     "name": "[Confort] Dynamic FPS",
                     "type": "FabricMod",
