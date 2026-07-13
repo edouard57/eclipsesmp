@@ -988,7 +988,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def _handle_crash_download(self, path):
         try:
-            crash_id = int(path.split("/")[3])
+            # /admin/api/crashes/<id>/download -> ['', 'admin', 'api', 'crashes', '<id>', 'download']
+            crash_id = int(path.split("/")[4])
         except Exception:
             self._send(400)
             return
