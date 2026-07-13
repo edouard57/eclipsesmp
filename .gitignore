@@ -5,3 +5,4 @@
 /logs/
 /dist/
 scripts/data.db
+scripts/__pycache__/
