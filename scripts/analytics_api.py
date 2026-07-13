@@ -19,6 +19,7 @@ Env vars required:
                         below to create one.
   PORT                  Defaults to 8081.
 """
+import base64
 import hashlib
 import hmac
 import io
@@ -26,8 +27,11 @@ import json
 import os
 import re
 import secrets
+import socket
 import sqlite3
+import struct
 import sys
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -71,6 +75,43 @@ RATE_LIMIT_SECONDS = 10
 _sessions = {}
 SESSION_TTL_SECONDS = 7 * 24 * 3600
 LOGIN_RATE_LIMIT_SECONDS = 3
+
+# Connected admin dashboard sockets (WebSocket, RFC 6455). Broadcasting a
+# tiny "something changed" ping lets the dashboard refetch instead of
+# polling on a timer.
+_ws_clients = set()
+_ws_lock = threading.Lock()
+WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+
+
+def ws_accept_key(client_key):
+    digest = hashlib.sha1((client_key + WS_GUID).encode("utf-8")).digest()
+    return base64.b64encode(digest).decode("ascii")
+
+
+def ws_encode_frame(text):
+    payload = text.encode("utf-8")
+    length = len(payload)
+    if length < 126:
+        header = struct.pack("!BB", 0x81, length)
+    elif length < 65536:
+        header = struct.pack("!BBH", 0x81, 126, length)
+    else:
+        header = struct.pack("!BBQ", 0x81, 127, length)
+    return header + payload
+
+
+def ws_broadcast(event_type):
+    frame = ws_encode_frame(json.dumps({"type": event_type}))
+    with _ws_lock:
+        dead = []
+        for sock in _ws_clients:
+            try:
+                sock.sendall(frame)
+            except OSError:
+                dead.append(sock)
+        for sock in dead:
+            _ws_clients.discard(sock)
 
 
 def check_password(password):
@@ -302,7 +343,9 @@ ADMIN_PAGE = r"""<!doctype html>
   .brand .dot {
     width: 8px; height: 8px; border-radius: 50%; background: var(--gold);
     box-shadow: 0 0 8px 1px var(--gold); animation: pulse 2.4s ease-in-out infinite;
+    transition: background .2s, box-shadow .2s;
   }
+  .brand .dot.offline { background: var(--ink-faint); box-shadow: none; animation: none; }
   @media (prefers-reduced-motion: reduce) { .brand .dot { animation: none; } }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
   .brand h1 { font-family: var(--font-display); font-size: 17px; margin: 0; font-weight: 600; }
@@ -392,7 +435,7 @@ ADMIN_PAGE = r"""<!doctype html>
 <div id="dashboard-view">
   <div class="topbar">
     <div class="brand">
-      <span class="dot"></span>
+      <span class="dot" id="ws-dot" title="Deconnecte"></span>
       <h1>Eclipse<span>SMP</span></h1>
       <span class="sub">panel admin</span>
     </div>
@@ -468,16 +511,41 @@ function fmtDate(iso){
 
 const loginView = document.getElementById('login-view');
 const dashView = document.getElementById('dashboard-view');
+const wsDot = document.getElementById('ws-dot');
 let allLaunches = [];
+let ws = null;
+let wsRetryDelay = 1000;
+
+function connectLive(){
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${proto}://${location.host}/admin/ws`);
+  ws.onopen = () => {
+    wsRetryDelay = 1000;
+    wsDot.classList.remove('offline');
+    wsDot.title = 'Connecte en direct';
+  };
+  ws.onmessage = () => { loadAll(); };
+  ws.onclose = () => {
+    wsDot.classList.add('offline');
+    wsDot.title = 'Deconnecte, reconnexion...';
+    if(dashView.style.display !== 'none'){
+      setTimeout(connectLive, wsRetryDelay);
+      wsRetryDelay = Math.min(wsRetryDelay * 1.5, 15000);
+    }
+  };
+  ws.onerror = () => ws.close();
+}
 
 function showDashboard(){
   loginView.style.display = 'none';
   dashView.style.display = 'block';
   loadAll();
+  connectLive();
 }
 function showLogin(){
   loginView.style.display = 'flex';
   dashView.style.display = 'none';
+  if(ws){ ws.onclose = null; ws.close(); ws = null; }
 }
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -645,6 +713,39 @@ class Handler(BaseHTTPRequestHandler):
             return False
         return True
 
+    def _handle_websocket(self):
+        if not self._require_session():
+            return
+
+        key = self.headers.get("Sec-WebSocket-Key")
+        if self.headers.get("Upgrade", "").lower() != "websocket" or not key:
+            self._send(400)
+            return
+
+        accept = ws_accept_key(key)
+        response = (
+            "HTTP/1.1 101 Switching Protocols\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            f"Sec-WebSocket-Accept: {accept}\r\n\r\n"
+        )
+        self.connection.sendall(response.encode("utf-8"))
+
+        sock = self.connection
+        with _ws_lock:
+            _ws_clients.add(sock)
+        try:
+            # We don't need anything the client sends (no client -> server
+            # messages in this app); just block until the connection drops
+            # so this thread's socket stays registered for broadcasts.
+            while sock.recv(1024):
+                pass
+        except OSError:
+            pass
+        finally:
+            with _ws_lock:
+                _ws_clients.discard(sock)
+
     def do_GET(self):
         parsed = urllib.parse.urlsplit(self.path)
         path = parsed.path
@@ -652,6 +753,10 @@ class Handler(BaseHTTPRequestHandler):
 
         if path in ("/admin", "/admin/"):
             self._send(200, ADMIN_PAGE.encode("utf-8"), "text/html; charset=utf-8")
+            return
+
+        if path == "/admin/ws":
+            self._handle_websocket()
             return
 
         if path.startswith("/admin/api/"):
@@ -743,6 +848,7 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         record_launch(username, account_type, launcher_version, self._client_ip())
+        ws_broadcast("launch")
 
         try:
             post_launch(username, account_type, launcher_version)
@@ -787,6 +893,7 @@ class Handler(BaseHTTPRequestHandler):
             username, account_type, launcher_version, filename,
             file_bytes.decode("utf-8", errors="replace"), self._client_ip()
         )
+        ws_broadcast("crash")
 
         try:
             post_crash(username, account_type, launcher_version, filename, file_bytes)
