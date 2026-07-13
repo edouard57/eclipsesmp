@@ -188,6 +188,20 @@
                     }
                 },
                 {
+                    "id": "modrinth:stackable:2.1.1",
+                    "name": "Stackable",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 37267,
+                        "MD5": "a7112b8ba12f31fd537cea25a811a8e9",
+                        "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar"
+                    }
+                },
+                {
                     "id": "modrinth:dynamic-fps:3.11.9",
                     "name": "[Confort] Dynamic FPS",
                     "type": "FabricMod",
@@ -353,20 +367,6 @@
                         "size": 562176,
                         "MD5": "4f65c14cb8745ee2dd5e39c8026df5f4",
                         "url": "https://cdn.modrinth.com/data/w7ThoJFB/versions/QWTzJNJY/zoomify-2.16.1%2B26.2.jar"
-                    }
-                },
-                {
-                    "id": "modrinth:stackable:2.1.1",
-                    "name": "[Confort] Stackable",
-                    "type": "FabricMod",
-                    "required": {
-                        "value": false,
-                        "def": true
-                    },
-                    "artifact": {
-                        "size": 37267,
-                        "MD5": "a7112b8ba12f31fd537cea25a811a8e9",
-                        "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar"
                     }
                 },
                 {

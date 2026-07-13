@@ -128,6 +128,7 @@ modules = [
     # to be in sync, and the mod needs Fabric Language Kotlin as a library).
     fabric_mod_module("fabric-language-kotlin", required=True),
     fabric_mod_module("elytra-trims", required=True),
+    fabric_mod_module("stackable", required=True),
     # --- Confort (optional, on by default even on weak PCs: pure optimizations
     #     or QoL with no real tradeoff, same spirit as the required core above) ---
     fabric_mod_module("dynamic-fps", tier_prefix="[Confort]", required=False, default=True),
@@ -143,7 +144,6 @@ modules = [
     # Library required by Zoomify.
     fabric_mod_module("yacl", required=True),
     fabric_mod_module("zoomify", tier_prefix="[Confort]", required=False, default=True),
-    fabric_mod_module("stackable", tier_prefix="[Confort]", required=False, default=True),
     # --- Interface (minimap / carte / menu des mods, optionnel, actif par defaut) ---
     fabric_mod_module("xaeros-minimap", tier_prefix="[Interface]", required=False, default=True),
     fabric_mod_module("xaeros-world-map", tier_prefix="[Interface]", required=False, default=True),
