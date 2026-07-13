@@ -485,7 +485,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const pw = document.getElementById('pw').value;
   const errEl = document.getElementById('login-error');
   errEl.textContent = '';
-  const res = await fetch('api/login', {
+  const res = await fetch('/admin/api/login', {
     method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({password: pw})
   });
   if(res.ok){ showDashboard(); }
@@ -494,7 +494,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 });
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
-  await fetch('api/logout', { method: 'POST' });
+  await fetch('/admin/api/logout', { method: 'POST' });
   showLogin();
 });
 
@@ -551,7 +551,7 @@ function renderCrashes(rows){
     <tr class="crash-row" data-id="${r.id}">
       <td class="user">${esc(r.username)}</td><td>${badge(r.account_type)}</td>
       <td>${esc(r.launcher_version)}</td><td>${fmtDate(r.created_at)}</td>
-      <td><a class="dl-link" href="api/crashes/${r.id}/download" onclick="event.stopPropagation()">${esc(r.filename)}</a></td>
+      <td><a class="dl-link" href="/admin/api/crashes/${r.id}/download" onclick="event.stopPropagation()">${esc(r.filename)}</a></td>
     </tr>
     <tr><td colspan="5" style="padding:0; border:none;">
       <div class="crash-preview" id="preview-${r.id}">${esc(r.preview)}${r.truncated ? '\n\n[...] telecharge le rapport complet ci-dessus.' : ''}</div>
@@ -571,11 +571,11 @@ document.getElementById('launch-search').addEventListener('input', (e) => {
 
 async function loadAll(){
   const [stats, days, launches, leaderboard, crashes] = await Promise.all([
-    fetch('api/stats').then(r => r.json()),
-    fetch('api/timeseries').then(r => r.json()),
-    fetch('api/launches?limit=100').then(r => r.json()),
-    fetch('api/leaderboard').then(r => r.json()),
-    fetch('api/crashes?limit=50').then(r => r.json()),
+    fetch('/admin/api/stats').then(r => r.json()),
+    fetch('/admin/api/timeseries').then(r => r.json()),
+    fetch('/admin/api/launches?limit=100').then(r => r.json()),
+    fetch('/admin/api/leaderboard').then(r => r.json()),
+    fetch('/admin/api/crashes?limit=50').then(r => r.json()),
   ]);
   renderKpis(stats);
   renderChart(days);
@@ -585,7 +585,7 @@ async function loadAll(){
   renderCrashes(crashes);
 }
 
-fetch('api/stats').then(r => { if(r.ok) showDashboard(); else showLogin(); }).catch(() => showLogin());
+fetch('/admin/api/stats').then(r => { if(r.ok) showDashboard(); else showLogin(); }).catch(() => showLogin());
 </script>
 </body>
 </html>
