@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Eclipse SMP</title>
 <meta name="description" content="Eclipse SMP -- serveur Minecraft survie prive, Fabric 26.2. Launcher dedie pour Windows, macOS et Linux.">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Eclipse SMP">
+<meta property="og:title" content="Eclipse SMP">
+<meta property="og:description" content="Une survie vanilla+ entre potes. Fabric 26.2, whitelist privee.">
+<meta property="og:url" content="https://eclipsesmp.cubi-mc.fr/">
+<meta property="og:image" content="https://eclipsesmp.cubi-mc.fr/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Eclipse SMP">
+<meta name="twitter:description" content="Une survie vanilla+ entre potes. Fabric 26.2, whitelist privee.">
+<meta name="twitter:image" content="https://eclipsesmp.cubi-mc.fr/assets/logo-512.png">
+
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo-32.png">
 <link rel="apple-touch-icon" href="/assets/logo-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,13 +58,13 @@
       <img class="server-icon" src="/assets/logo-512.png" alt="Icone du serveur Eclipse SMP">
       <div class="server-info">
         <div class="server-name">Eclipse SMP</div>
-        <div class="server-motd">Une survie entre amis &middot; Fabric 26.2</div>
+        <div class="server-motd" id="server-motd">Une survie entre amis &middot; Fabric 26.2</div>
       </div>
-      <div class="ping-bars" title="Ping"><span></span><span></span><span></span><span></span></div>
+      <div class="ping-bars" id="ping-bars" title="Statut inconnu"><span></span><span></span><span></span><span></span></div>
     </div>
     <div class="server-row-bottom">
       <span class="server-addr">smp.cubi-mc.fr</span>
-      <span class="server-slots">20 places &middot; whitelist</span>
+      <span class="server-slots" id="server-slots">20 places &middot; whitelist</span>
     </div>
   </div>
 </header>

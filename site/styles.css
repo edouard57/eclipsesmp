@@ -412,3 +412,24 @@ a:focus-visible, button:focus-visible {
   outline: 2px solid var(--torch);
   outline-offset: 3px;
 }
+
+/* ---------- Scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.revealed { opacity: 1; transform: none; }
+.reveal-line { transform: translateY(6px); transition-duration: .4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Live status ---------- */
+
+.ping-bars.offline span { background: var(--ink-faint); }
+.ping-bars.offline span:nth-child(2),
+.ping-bars.offline span:nth-child(3),
+.ping-bars.offline span:nth-child(4) { opacity: 0.35; }
