@@ -28,8 +28,9 @@ const {
 }                             = require('helios-core/java')
 
 // Internal Requirements
-const DiscordWrapper          = require('./assets/js/discordwrapper')
-const ProcessBuilder          = require('./assets/js/processbuilder')
+const Analytics                = require('./assets/js/analytics')
+const DiscordWrapper           = require('./assets/js/discordwrapper')
+const ProcessBuilder           = require('./assets/js/processbuilder')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -556,6 +557,7 @@ async function dlAsync(login = true) {
     if(login) {
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
+        Analytics.trackLaunch(authUser, remote.app.getVersion())
         let pb = new ProcessBuilder(serv, versionData, modLoaderData, authUser, remote.app.getVersion())
         setLaunchDetails(Lang.queryJS('landing.dlAsync.launchingGame'))
 
