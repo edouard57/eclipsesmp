@@ -128,7 +128,6 @@ modules = [
     # to be in sync, and the mod needs Fabric Language Kotlin as a library).
     fabric_mod_module("fabric-language-kotlin", required=True),
     fabric_mod_module("elytra-trims", required=True),
-    fabric_mod_module("defixus", required=True),
     # --- Confort (optional, on by default even on weak PCs: pure optimizations
     #     or QoL with no real tradeoff, same spirit as the required core above) ---
     fabric_mod_module("dynamic-fps", tier_prefix="[Confort]", required=False, default=True),

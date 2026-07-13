@@ -188,20 +188,6 @@
                     }
                 },
                 {
-                    "id": "modrinth:defixus:1.0.5",
-                    "name": "Defixus Anti-Cheat",
-                    "type": "FabricMod",
-                    "required": {
-                        "value": true,
-                        "def": true
-                    },
-                    "artifact": {
-                        "size": 127384,
-                        "MD5": "963fd858f52b4bf8147058c7739b1d86",
-                        "url": "https://cdn.modrinth.com/data/sCAhKklX/versions/gNSWLB0k/defixus-1.0.5.jar"
-                    }
-                },
-                {
                     "id": "modrinth:dynamic-fps:3.11.9",
                     "name": "[Confort] Dynamic FPS",
                     "type": "FabricMod",
