@@ -253,5 +253,15 @@
     "size": 1121528,
     "md5": "b4e14cae8115abcae97377260c65843f",
     "sha1": "e5d90b4f2cc508056097249d71fc9482ae73c111"
+  },
+  "stackable": {
+    "project_id": "Bc74RbD1",
+    "version_number": "2.1.1",
+    "name": "[Fabric] Stackable 26.2+2.1.1",
+    "filename": "stackable-fabric-26.2-2.1.1.jar",
+    "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar",
+    "size": 37267,
+    "md5": "a7112b8ba12f31fd537cea25a811a8e9",
+    "sha1": "d6e295d40764c467cba532dfef31ec83872ab316"
   }
 }

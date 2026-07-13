@@ -356,6 +356,20 @@
                     }
                 },
                 {
+                    "id": "modrinth:stackable:2.1.1",
+                    "name": "[Confort] Stackable",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 37267,
+                        "MD5": "a7112b8ba12f31fd537cea25a811a8e9",
+                        "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar"
+                    }
+                },
+                {
                     "id": "modrinth:xaeros-minimap:fabric-26.2-26.2.0",
                     "name": "[Interface] Xaero's Minimap",
                     "type": "FabricMod",
