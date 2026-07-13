@@ -235,6 +235,113 @@ def post_crash(username, account_type, launcher_version, filename, file_bytes):
     )
 
 
+# The published port doesn't loop back to 127.0.0.1 on this host (Docker's
+# port-publish NAT path only handles external/container traffic), so ping
+# the container directly by its Docker network IP instead of localhost.
+MC_HOST = "172.22.0.2"
+MC_PORT = 25565
+STATUS_CACHE_SECONDS = 5
+_status_cache = {"at": 0, "value": None}
+
+
+def _write_varint(value):
+    if value < 0:
+        # Python ints are arbitrary-precision: a negative value never
+        # reaches 0 under repeated >>= 7, so this would spin forever.
+        raise ValueError("_write_varint does not support negative values")
+    out = bytearray()
+    while True:
+        byte = value & 0x7F
+        value >>= 7
+        if value:
+            out.append(byte | 0x80)
+        else:
+            out.append(byte)
+            return bytes(out)
+
+
+def _read_varint(sock):
+    value = 0
+    for i in range(5):
+        b = sock.recv(1)
+        if not b:
+            raise ConnectionError("Socket closed while reading varint")
+        byte = b[0]
+        value |= (byte & 0x7F) << (7 * i)
+        if not (byte & 0x80):
+            return value
+    raise ValueError("VarInt too long")
+
+
+def _recv_exact(sock, n):
+    buf = b""
+    while len(buf) < n:
+        chunk = sock.recv(n - len(buf))
+        if not chunk:
+            raise ConnectionError("Socket closed while reading payload")
+        buf += chunk
+    return buf
+
+
+def ping_minecraft_server(host, port, timeout=3):
+    """Minimal Server List Ping (modern, post-1.7 protocol). Returns
+    {"online": True, "players_online": int, "players_max": int, "motd": str}
+    or {"online": False} if the server can't be reached."""
+    try:
+        with socket.create_connection((host, port), timeout=timeout) as sock:
+            host_bytes = host.encode("utf-8")
+            handshake = (
+                _write_varint(0x00)
+                # Protocol version is only meaningful for a login handshake;
+                # vanilla ignores it for a status ping. -1 (a common "don't
+                # care" convention) infinite-loops _write_varint though --
+                # Python's negative ints never terminate a repeated right
+                # shift -- so send a real placeholder value instead.
+                + _write_varint(0)
+                + _write_varint(len(host_bytes)) + host_bytes
+                + struct.pack(">H", port)
+                + _write_varint(1)  # next state: status
+            )
+            sock.sendall(_write_varint(len(handshake)) + handshake)
+
+            status_request = _write_varint(0x00)
+            sock.sendall(_write_varint(len(status_request)) + status_request)
+
+            _read_varint(sock)  # packet length, unused
+            packet_id = _read_varint(sock)
+            if packet_id != 0x00:
+                return {"online": False}
+            str_len = _read_varint(sock)
+            payload = _recv_exact(sock, str_len).decode("utf-8")
+            data = json.loads(payload)
+
+            description = data.get("description", "")
+            if isinstance(description, dict):
+                description = description.get("text", "") or "".join(
+                    e.get("text", "") for e in description.get("extra", [])
+                )
+
+            players = data.get("players", {})
+            return {
+                "online": True,
+                "players_online": players.get("online", 0),
+                "players_max": players.get("max", 0),
+                "motd": str(description)[:200],
+            }
+    except Exception:
+        return {"online": False}
+
+
+def get_server_status():
+    now = time.monotonic()
+    if _status_cache["value"] is not None and now - _status_cache["at"] < STATUS_CACHE_SECONDS:
+        return _status_cache["value"]
+    value = ping_minecraft_server(MC_HOST, MC_PORT)
+    _status_cache["at"] = now
+    _status_cache["value"] = value
+    return value
+
+
 def parse_multipart(body, boundary):
     """Minimal multipart/form-data parser. Returns {name: (value_bytes, filename_or_None)}."""
     boundary_bytes = ("--" + boundary).encode("utf-8")
@@ -750,6 +857,11 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         path = parsed.path
         self._query = urllib.parse.parse_qs(parsed.query)
+
+        if path == "/status":
+            status = get_server_status()
+            self._send(200, json.dumps(status).encode("utf-8"), "application/json")
+            return
 
         if path in ("/admin", "/admin/"):
             self._send(200, ADMIN_PAGE.encode("utf-8"), "text/html; charset=utf-8")
