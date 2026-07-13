@@ -14,6 +14,9 @@ const SHADER_OPTION = /shaderPack=(.+)/
 const SHADER_DIR = 'shaderpacks'
 const SHADER_CONFIG = 'optionsshaders.txt'
 
+const RESOURCEPACK_REGEX = /^(.+)\.zip$/
+const RESOURCEPACK_DIR = 'resourcepacks'
+
 /**
  * Validate that the given directory exists. If not, it is
  * created.
@@ -231,6 +234,28 @@ exports.addShaderpacks = function(files, instanceDir) {
 
     for(let f of files) {
         if(SHADER_REGEX.exec(f.name) != null) {
+            fs.moveSync(f.path, path.join(p, f.name))
+        }
+    }
+
+}
+
+/**
+ * Copy custom resource packs into the instance's resourcepacks folder.
+ * Enabling them is left to Minecraft's own in-game Resource Packs menu --
+ * this just gets the files into the right place.
+ *
+ * @param {FileList} files The files to add.
+ * @param {string} instanceDir The path to the server instance directory.
+ */
+exports.addResourcePacks = function(files, instanceDir) {
+
+    const p = path.join(instanceDir, RESOURCEPACK_DIR)
+
+    exports.validateDir(p)
+
+    for(let f of files) {
+        if(RESOURCEPACK_REGEX.exec(f.name) != null) {
             fs.moveSync(f.path, path.join(p, f.name))
         }
     }

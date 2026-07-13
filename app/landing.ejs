@@ -50,6 +50,12 @@
                     <div id="server_status_wrapper">
                         <span class="bot_label" id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
                         <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
+                        <div id="onlinePlayersTooltip">
+                            <div id="onlinePlayersTooltipTitle"><%- lang('landing.onlinePlayersTooltipTitle') %></div>
+                            <div id="onlinePlayersList">
+                                <!-- Online player avatars/names are populated here. -->
+                            </div>
+                        </div>
                     </div>
                     <div class="bot_divider"></div>
                     <div id="mojangStatusWrapper">
@@ -69,6 +75,12 @@
                                 <!-- Non Essential Mojang services are populated here. -->
                             </div>
                         </div>
+                    </div>
+                    <div class="bot_divider"></div>
+                    <div id="playtimeWrapper">
+                        <span class="bot_label"><%- lang('landing.playtime') %></span>
+                        <span id="playtime_text"><%- lang('landing.playtimePlaceholder') %></span>
+                        <div id="playtimeTooltip"></div>
                     </div>
                 </div>
             </div>

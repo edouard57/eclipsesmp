@@ -154,8 +154,47 @@ function updateSelectedAccount(authUser){
         }
     }
     user_text.innerHTML = username
+    updatePlaytimeDisplay()
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount())
+
+/**
+ * Format a millisecond duration as e.g. "4h30" or "35min", matching the
+ * compact style of the other landing dashboard stats.
+ */
+function formatPlaytime(ms){
+    const totalMinutes = Math.floor(ms/60000)
+    if(totalMinutes < 1){
+        return '0min'
+    }
+    const hours = Math.floor(totalMinutes/60)
+    const minutes = totalMinutes%60
+    return hours > 0 ? `${hours}h${String(minutes).padStart(2, '0')}` : `${minutes}min`
+}
+
+/**
+ * Refresh the playtime stat for the currently selected account.
+ */
+function updatePlaytimeDisplay(){
+    const playtimeText = document.getElementById('playtime_text')
+    const playtimeTooltip = document.getElementById('playtimeTooltip')
+    const authUser = ConfigManager.getSelectedAccount()
+    if(playtimeText == null || authUser == null){
+        return
+    }
+    const total = ConfigManager.getPlaytimeTotal(authUser.uuid)
+    if(total <= 0){
+        playtimeText.innerHTML = Lang.queryJS('landing.playtime.none')
+        playtimeTooltip.innerHTML = ''
+        return
+    }
+    const weekAgo = Date.now() - (7*24*60*60*1000)
+    const thisWeek = ConfigManager.getPlaytimeSince(authUser.uuid, weekAgo)
+    // Only the all-time total is shown inline to keep this row's width in
+    // line with the other two stats -- the breakdown lives in the tooltip.
+    playtimeText.innerHTML = formatPlaytime(total)
+    playtimeTooltip.innerHTML = `${formatPlaytime(thisWeek)} ${Lang.queryJS('landing.playtime.weekSuffix')}`
+}
 
 // Bind selected server
 function updateSelectedServer(serv){
@@ -244,6 +283,7 @@ const refreshServerStatus = async (fade = false) => {
 
     let pLabel = Lang.queryJS('landing.serverStatus.server')
     let pVal = Lang.queryJS('landing.serverStatus.offline')
+    let sample = []
 
     try {
 
@@ -251,11 +291,27 @@ const refreshServerStatus = async (fade = false) => {
         console.log(servStat)
         pLabel = Lang.queryJS('landing.serverStatus.players')
         pVal = servStat.players.online + '/' + servStat.players.max
+        sample = servStat.players.sample || []
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
         loggerLanding.debug(err)
     }
+
+    const wrapper = document.getElementById('server_status_wrapper')
+    const list = document.getElementById('onlinePlayersList')
+    if(sample.length > 0){
+        wrapper.classList.add('has-online-players')
+        list.innerHTML = sample.map(p => `
+            <div class="onlinePlayerRow">
+                <img class="onlinePlayerAvatar" src="https://mc-heads.net/avatar/${p.id}/16" alt=""/>
+                <span class="onlinePlayerName">${p.name}</span>
+            </div>`).join('')
+    } else {
+        wrapper.classList.remove('has-online-players')
+        list.innerHTML = ''
+    }
+
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {
             document.getElementById('landingPlayerLabel').innerHTML = pLabel
@@ -266,7 +322,7 @@ const refreshServerStatus = async (fade = false) => {
         document.getElementById('landingPlayerLabel').innerHTML = pLabel
         document.getElementById('player_count').innerHTML = pVal
     }
-    
+
 }
 
 refreshMojangStatuses()
@@ -617,6 +673,14 @@ async function dlAsync(login = true) {
             proc.stderr.on('data', gameErrorListener)
 
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
+
+            // Track playtime for this account regardless of Discord RPC config.
+            const sessionStart = Date.now()
+            proc.on('close', (code, signal) => {
+                ConfigManager.addPlaytime(authUser.uuid, Date.now()-sessionStart)
+                ConfigManager.save()
+                updatePlaytimeDisplay()
+            })
 
             // Init Discord Hook
             if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){

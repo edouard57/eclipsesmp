@@ -20,6 +20,7 @@ Env vars required:
   PORT                  Defaults to 8081.
 """
 import base64
+import datetime
 import hashlib
 import hmac
 import io
@@ -35,7 +36,9 @@ import threading
 import time
 import urllib.parse
 import urllib.request
+from email.utils import format_datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from xml.sax.saxutils import escape as xml_escape
 
 
 def generate_hash(password):
@@ -52,6 +55,9 @@ if __name__ == "__main__" and len(sys.argv) == 3 and sys.argv[1] == "hash":
 
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
 DISCORD_CHANNEL_ID = os.environ["DISCORD_CHANNEL_ID"]
+# Where player-shared screenshots are posted ("Media" channel) -- falls back
+# to the main channel if unset so this doesn't hard-crash an old deployment.
+SCREENSHOT_CHANNEL_ID = os.environ.get("SCREENSHOT_CHANNEL_ID", DISCORD_CHANNEL_ID)
 SHARED_SECRET = os.environ["SHARED_SECRET"]
 ADMIN_PASSWORD_HASH = os.environ["ADMIN_PASSWORD_HASH"]
 PORT = int(os.environ.get("PORT", "8081"))
@@ -65,6 +71,7 @@ ACCOUNT_TYPES = {"microsoft": "Premium", "offline": "Crack"}
 USER_AGENT = "EclipseSMPAnalytics (https://eclipsesmp.cubi-mc.fr, 1.0)"
 
 MAX_CRASH_REPORT_SIZE = 8 * 1024 * 1024  # Discord's own attachment cap.
+MAX_SCREENSHOT_SIZE = 8 * 1024 * 1024
 
 # Minimal per-IP rate limit: one accepted event every 10s per endpoint.
 _last_seen = {}
@@ -140,6 +147,7 @@ def init_db():
             account_type TEXT NOT NULL,
             launcher_version TEXT,
             ip TEXT,
+            kind TEXT NOT NULL DEFAULT 'game_launch',
             created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
         );
         CREATE TABLE IF NOT EXISTS crashes (
@@ -152,16 +160,28 @@ def init_db():
             ip TEXT,
             created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
         );
+        CREATE TABLE IF NOT EXISTS announcements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            author TEXT NOT NULL,
+            created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+        );
     """)
+    # `kind` was added after the launches table already existed in production --
+    # CREATE TABLE IF NOT EXISTS above is a no-op there, so migrate explicitly.
+    existing_cols = {row["name"] for row in conn.execute("PRAGMA table_info(launches)")}
+    if "kind" not in existing_cols:
+        conn.execute("ALTER TABLE launches ADD COLUMN kind TEXT NOT NULL DEFAULT 'game_launch'")
     conn.commit()
     conn.close()
 
 
-def record_launch(username, account_type, launcher_version, ip):
+def record_launch(username, account_type, launcher_version, ip, kind="game_launch"):
     conn = get_db()
     conn.execute(
-        "INSERT INTO launches (username, account_type, launcher_version, ip) VALUES (?, ?, ?, ?)",
-        (username, account_type, launcher_version, ip),
+        "INSERT INTO launches (username, account_type, launcher_version, ip, kind) VALUES (?, ?, ?, ?, ?)",
+        (username, account_type, launcher_version, ip, kind),
     )
     conn.commit()
     conn.close()
@@ -176,6 +196,75 @@ def record_crash(username, account_type, launcher_version, filename, content, ip
     )
     conn.commit()
     conn.close()
+
+
+def list_announcements(limit=30):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT id, title, content, author, created_at FROM announcements "
+        "ORDER BY id DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def create_announcement(title, content, author):
+    conn = get_db()
+    cur = conn.execute(
+        "INSERT INTO announcements (title, content, author) VALUES (?, ?, ?)",
+        (title, content, author),
+    )
+    conn.commit()
+    new_id = cur.lastrowid
+    conn.close()
+    return new_id
+
+
+def delete_announcement(announcement_id):
+    conn = get_db()
+    conn.execute("DELETE FROM announcements WHERE id = ?", (announcement_id,))
+    conn.commit()
+    conn.close()
+
+
+def render_news_rss():
+    """Renders the announcements as an RSS 2.0 feed. The launcher's
+    loadNews() (app/assets/js/scripts/landing.js) expects WordPress-style
+    <item> fields (title, link, pubDate, content:encoded, dc:creator,
+    slash:comments) -- keep this in sync with that parser."""
+    items = []
+    for a in list_announcements():
+        try:
+            dt = datetime.datetime.strptime(a["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                tzinfo=datetime.timezone.utc
+            )
+        except ValueError:
+            dt = datetime.datetime.now(datetime.timezone.utc)
+        link = f"https://eclipsesmp.cubi-mc.fr/#news-{a['id']}"
+        items.append(f"""    <item>
+      <title>{xml_escape(a['title'])}</title>
+      <link>{xml_escape(link)}</link>
+      <guid isPermaLink="false">announcement-{a['id']}</guid>
+      <pubDate>{format_datetime(dt)}</pubDate>
+      <dc:creator>{xml_escape(a['author'])}</dc:creator>
+      <slash:comments>0</slash:comments>
+      <content:encoded><![CDATA[{a['content']}]]></content:encoded>
+    </item>""")
+    items_xml = "\n".join(items)
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+  <channel>
+    <title>Eclipse SMP -- Actus</title>
+    <link>https://eclipsesmp.cubi-mc.fr/</link>
+    <description>Annonces du serveur Eclipse SMP</description>
+{items_xml}
+  </channel>
+</rss>
+"""
 
 
 def discord_request(path, data, content_type):
@@ -193,9 +282,10 @@ def discord_request(path, data, content_type):
         resp.read()
 
 
-def post_launch(username, account_type, launcher_version):
+def post_launch(username, account_type, launcher_version, kind="game_launch"):
     label = ACCOUNT_TYPES.get(account_type, account_type)
-    content = f"**{username}** a lance le jeu -- `{label}` -- launcher v{launcher_version}"
+    action = "a ouvert le launcher" if kind == "app_open" else "a lance le jeu"
+    content = f"**{username}** {action} -- `{label}` -- launcher v{launcher_version}"
     # ensure_ascii=False: the default escapes non-ascii as \uXXXX surrogate
     # pairs, which Discord's API silently drops (empty message content)
     # instead of rejecting outright. Raw UTF-8 bytes work correctly.
@@ -230,6 +320,38 @@ def post_crash(username, account_type, launcher_version, filename, file_bytes):
 
     discord_request(
         f"/channels/{DISCORD_CHANNEL_ID}/messages",
+        body.getvalue(),
+        f"multipart/form-data; boundary={boundary}",
+    )
+
+
+def post_screenshot(username, filename, file_bytes):
+    content = f"**{username}** a partage un screenshot"
+    boundary = "EclipseSMPScreenshotBoundary"
+    content_type = "image/png" if filename.lower().endswith(".png") else "image/jpeg"
+
+    def field(name, value):
+        return (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="{name}"\r\n\r\n'
+            f"{value}\r\n"
+        ).encode("utf-8")
+
+    payload_json = json.dumps({"content": content}, ensure_ascii=False)
+    body = io.BytesIO()
+    body.write(field("payload_json", payload_json))
+    body.write(
+        (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="files[0]"; filename="{filename}"\r\n'
+            f"Content-Type: {content_type}\r\n\r\n"
+        ).encode("utf-8")
+    )
+    body.write(file_bytes)
+    body.write(f"\r\n--{boundary}--\r\n".encode("utf-8"))
+
+    discord_request(
+        f"/channels/{SCREENSHOT_CHANNEL_ID}/messages",
         body.getvalue(),
         f"multipart/form-data; boundary={boundary}",
     )
@@ -322,11 +444,17 @@ def ping_minecraft_server(host, port, timeout=3):
                 )
 
             players = data.get("players", {})
+            sample = players.get("sample") or []
             return {
                 "online": True,
                 "players_online": players.get("online", 0),
                 "players_max": players.get("max", 0),
                 "motd": str(description)[:200],
+                "players_sample": [
+                    {"name": p.get("name", ""), "uuid": p.get("id", "")}
+                    for p in sample
+                    if isinstance(p, dict) and p.get("name")
+                ][:40],
             }
     except Exception:
         return {"online": False}
@@ -565,6 +693,33 @@ ADMIN_PAGE = r"""<!doctype html>
 
   .two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
   @media (max-width: 820px) { .two-col { grid-template-columns: 1fr; } }
+
+  .announcement-form { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--line); }
+  .announcement-form input, .announcement-form textarea {
+    width: 100%; background: var(--bg-elevated); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 12px; color: var(--ink); font-family: var(--font-body); font-size: 13px; resize: vertical;
+  }
+  .announcement-form textarea { min-height: 90px; font-family: var(--font-mono); font-size: 12px; }
+  .announcement-form input:focus, .announcement-form textarea:focus { border-color: var(--violet); outline: none; }
+  .announcement-form-row { display: flex; gap: 10px; align-items: center; }
+  .btn-publish {
+    background: var(--violet); color: #fff; border: none; border-radius: 8px; padding: 9px 18px;
+    font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  .btn-publish:hover { filter: brightness(1.1); }
+  .announcement-row {
+    padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex;
+    justify-content: space-between; align-items: flex-start; gap: 12px;
+  }
+  .announcement-row:last-child { border-bottom: none; }
+  .announcement-title { font-weight: 600; font-size: 13.5px; margin-bottom: 4px; }
+  .announcement-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); margin-bottom: 6px; }
+  .announcement-content { font-size: 12.5px; color: var(--ink-dim); white-space: pre-wrap; }
+  .btn-delete-announcement {
+    background: transparent; border: 1px solid rgba(255,128,128,0.35); color: #ff8080;
+    border-radius: 6px; padding: 4px 10px; font-size: 11.5px; cursor: pointer; white-space: nowrap;
+  }
+  .btn-delete-announcement:hover { border-color: #ff8080; background: rgba(255,128,128,0.1); }
 </style>
 </head>
 <body>
@@ -601,6 +756,22 @@ ADMIN_PAGE = r"""<!doctype html>
   </div>
 
   <div class="kpis" id="kpis"></div>
+
+  <section>
+    <div class="section-head"><h2>Actus (flux du launcher)</h2></div>
+    <div class="panel">
+      <div class="announcement-form">
+        <input id="announcement-title" placeholder="Titre de l'annonce" maxlength="200">
+        <textarea id="announcement-content" placeholder="Contenu (du HTML simple est accepte, ex: &lt;p&gt;...&lt;/p&gt;)"></textarea>
+        <div class="announcement-form-row">
+          <input id="announcement-author" placeholder="Auteur" maxlength="50" style="max-width:200px">
+          <button class="btn-publish" id="announcement-publish">Publier</button>
+        </div>
+      </div>
+      <div id="announcements-rows"></div>
+      <div class="empty" id="announcements-empty" style="display:none">Aucune annonce pour l'instant.</div>
+    </div>
+  </section>
 
   <section>
     <div class="section-head"><h2>Lancements (14 derniers jours)</h2></div>
@@ -853,6 +1024,51 @@ function renderVersions(rows){
   `).join('');
 }
 
+function renderAnnouncements(rows){
+  const container = document.getElementById('announcements-rows');
+  document.getElementById('announcements-empty').style.display = rows.length ? 'none' : 'block';
+  container.innerHTML = rows.map(r => `
+    <div class="announcement-row">
+      <div style="flex:1; min-width:0;">
+        <div class="announcement-title">${esc(r.title)}</div>
+        <div class="announcement-meta">${esc(r.author)} -- ${fmtDate(r.created_at)}</div>
+        <div class="announcement-content">${esc(r.content)}</div>
+      </div>
+      <button class="btn-delete-announcement" data-id="${r.id}">Supprimer</button>
+    </div>
+  `).join('');
+  container.querySelectorAll('.btn-delete-announcement').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('Supprimer cette annonce ?')) return;
+      await fetch('/admin/api/announcements/' + btn.dataset.id, { method: 'DELETE' });
+      loadAll();
+    });
+  });
+}
+
+document.getElementById('announcement-publish').addEventListener('click', async () => {
+  const title = document.getElementById('announcement-title').value.trim();
+  const content = document.getElementById('announcement-content').value.trim();
+  const author = document.getElementById('announcement-author').value.trim() || 'Eclipse SMP';
+  if(!title || !content) return;
+  const btn = document.getElementById('announcement-publish');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/admin/api/announcements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content, author }),
+    });
+    if(res.ok){
+      document.getElementById('announcement-title').value = '';
+      document.getElementById('announcement-content').value = '';
+      loadAll();
+    }
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 function renderCrashes(rows){
   const tbody = document.getElementById('crashes-body');
   document.getElementById('crashes-empty').style.display = rows.length ? 'none' : 'block';
@@ -879,13 +1095,14 @@ document.getElementById('launch-search').addEventListener('input', (e) => {
 });
 
 async function loadAll(){
-  const [stats, days, launches, leaderboard, versions, crashes] = await Promise.all([
+  const [stats, days, launches, leaderboard, versions, crashes, announcements] = await Promise.all([
     fetch('/admin/api/stats').then(r => r.json()),
     fetch('/admin/api/timeseries').then(r => r.json()),
     fetch('/admin/api/launches?limit=100').then(r => r.json()),
     fetch('/admin/api/leaderboard').then(r => r.json()),
     fetch('/admin/api/versions').then(r => r.json()),
     fetch('/admin/api/crashes?limit=50').then(r => r.json()),
+    fetch('/admin/api/announcements').then(r => r.json()),
   ]);
   renderKpis(stats);
   renderChart(days);
@@ -894,6 +1111,7 @@ async function loadAll(){
   renderLeaderboard(leaderboard);
   renderVersions(versions);
   renderCrashes(crashes);
+  renderAnnouncements(announcements);
 }
 
 fetch('/admin/api/stats').then(r => { if(r.ok) showDashboard(); else showLogin(); }).catch(() => showLogin());
@@ -926,14 +1144,17 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
         self.end_headers()
 
-    def _check_common(self):
-        """Auth + rate limit for public /track and /crash. Returns True to proceed."""
+    def _check_common(self, key_suffix=None):
+        """Auth + rate limit for public /track, /crash and /screenshot. Returns
+        True to proceed. key_suffix separates distinct event kinds sharing the
+        same path (e.g. /track's app_open vs game_launch) so one doesn't
+        rate-limit-suppress the other -- callers that don't care can omit it."""
         if self.headers.get("X-Analytics-Secret") != SHARED_SECRET:
             self._send(401)
             return False
         client_ip = self.headers.get("X-Real-IP", self.client_address[0])
         now = time.monotonic()
-        key = (client_ip, self.path)
+        key = (client_ip, self.path, key_suffix)
         if now - _last_seen.get(key, 0) < RATE_LIMIT_SECONDS:
             self._send(429)
             return False
@@ -999,6 +1220,10 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, json.dumps(status).encode("utf-8"), "application/json")
             return
 
+        if path == "/news.xml":
+            self._send(200, render_news_rss().encode("utf-8"), "application/rss+xml; charset=utf-8")
+            return
+
         if path in ("/admin", "/admin/"):
             self._send(200, ADMIN_PAGE.encode("utf-8"), "text/html; charset=utf-8")
             return
@@ -1028,6 +1253,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._handle_crashes_csv()
             elif path == "/admin/api/crashes":
                 self._handle_crashes()
+            elif path == "/admin/api/announcements":
+                self._handle_announcements_list()
             else:
                 self._send(404)
             return
@@ -1039,10 +1266,20 @@ class Handler(BaseHTTPRequestHandler):
             self._handle_track()
         elif self.path == "/crash":
             self._handle_crash()
+        elif self.path == "/screenshot":
+            self._handle_screenshot()
         elif self.path == "/admin/api/login":
             self._handle_login()
         elif self.path == "/admin/api/logout":
             self._handle_logout()
+        elif self.path == "/admin/api/announcements":
+            self._handle_announcement_create()
+        else:
+            self._send(404)
+
+    def do_DELETE(self):
+        if self.path.startswith("/admin/api/announcements/"):
+            self._handle_announcement_delete(self.path)
         else:
             self._send(404)
 
@@ -1085,27 +1322,32 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def _handle_track(self):
-        if not self._check_common():
-            return
         try:
             length = int(self.headers.get("Content-Length", "0"))
             data = json.loads(self.rfile.read(length))
             username = data["username"]
             account_type = data["type"]
             launcher_version = str(data.get("launcherVersion", "?"))[:20]
+            kind = data.get("kind", "game_launch")
         except Exception:
             self._send(400)
+            return
+
+        if kind not in ("game_launch", "app_open"):
+            self._send(400)
+            return
+        if not self._check_common(key_suffix=kind):
             return
 
         if not USERNAME_RE.match(username) or account_type not in ACCOUNT_TYPES:
             self._send(400)
             return
 
-        record_launch(username, account_type, launcher_version, self._client_ip())
+        record_launch(username, account_type, launcher_version, self._client_ip(), kind)
         ws_broadcast("launch")
 
         try:
-            post_launch(username, account_type, launcher_version)
+            post_launch(username, account_type, launcher_version, kind)
         except Exception as e:
             print(f"Failed to post launch to Discord: {e}", flush=True)
 
@@ -1156,18 +1398,62 @@ class Handler(BaseHTTPRequestHandler):
 
         self._send(204)
 
+    def _handle_screenshot(self):
+        length = int(self.headers.get("Content-Length", "0"))
+        if length > MAX_SCREENSHOT_SIZE + 4096:
+            self._send(413)
+            self.rfile.read(length)
+            return
+
+        if not self._check_common():
+            return
+
+        content_type = self.headers.get("Content-Type", "")
+        boundary_match = re.search(r'boundary="?([^";]+)"?', content_type)
+        if not boundary_match:
+            self._send(400)
+            return
+
+        try:
+            body = self.rfile.read(length)
+            fields = parse_multipart(body, boundary_match.group(1))
+            username = fields["username"][0].decode("utf-8")
+            file_bytes, filename = fields["file"]
+        except Exception:
+            self._send(400)
+            return
+
+        if not USERNAME_RE.match(username) or not filename:
+            self._send(400)
+            return
+        if not filename.lower().endswith((".png", ".jpg", ".jpeg")):
+            self._send(400)
+            return
+
+        try:
+            post_screenshot(username, filename, file_bytes)
+        except Exception as e:
+            print(f"Failed to post screenshot to Discord: {e}", flush=True)
+            self._send(502)
+            return
+
+        self._send(204)
+
     def _handle_stats(self):
         conn = get_db()
-        total_launches = conn.execute("SELECT COUNT(*) c FROM launches").fetchone()["c"]
-        unique_players = conn.execute("SELECT COUNT(DISTINCT username) c FROM launches").fetchone()["c"]
+        # kind='game_launch' throughout this file's stats queries -- app_open
+        # rows (just "the launcher was opened", no game involved) share this
+        # table but must not inflate launch counts/leaderboards/etc.
+        total_launches = conn.execute("SELECT COUNT(*) c FROM launches WHERE kind='game_launch'").fetchone()["c"]
+        unique_players = conn.execute("SELECT COUNT(DISTINCT username) c FROM launches WHERE kind='game_launch'").fetchone()["c"]
         premium_count = conn.execute(
-            "SELECT COUNT(DISTINCT username) c FROM launches WHERE account_type='microsoft'"
+            "SELECT COUNT(DISTINCT username) c FROM launches WHERE kind='game_launch' AND account_type='microsoft'"
         ).fetchone()["c"]
         crack_count = conn.execute(
-            "SELECT COUNT(DISTINCT username) c FROM launches WHERE account_type='offline'"
+            "SELECT COUNT(DISTINCT username) c FROM launches WHERE kind='game_launch' AND account_type='offline'"
         ).fetchone()["c"]
         launches_today = conn.execute(
-            "SELECT COUNT(*) c FROM launches WHERE date(created_at) = date('now')"
+            "SELECT COUNT(*) c FROM launches WHERE kind='game_launch' AND date(created_at) = date('now')"
         ).fetchone()["c"]
         total_crashes = conn.execute("SELECT COUNT(*) c FROM crashes").fetchone()["c"]
         conn.close()
@@ -1184,7 +1470,7 @@ class Handler(BaseHTTPRequestHandler):
         conn = get_db()
         rows = conn.execute(
             "SELECT date(created_at) as day, COUNT(*) as count FROM launches "
-            "WHERE created_at >= datetime('now', '-13 days') GROUP BY day"
+            "WHERE kind='game_launch' AND created_at >= datetime('now', '-13 days') GROUP BY day"
         ).fetchall()
         conn.close()
         counts = {r["day"]: r["count"] for r in rows}
@@ -1201,8 +1487,8 @@ class Handler(BaseHTTPRequestHandler):
         rows = conn.execute("""
             SELECT username, COUNT(*) as launches,
                    (SELECT account_type FROM launches l2 WHERE l2.username = l1.username
-                    ORDER BY l2.id DESC LIMIT 1) as account_type
-            FROM launches l1 GROUP BY username ORDER BY launches DESC LIMIT 10
+                    AND l2.kind='game_launch' ORDER BY l2.id DESC LIMIT 1) as account_type
+            FROM launches l1 WHERE kind='game_launch' GROUP BY username ORDER BY launches DESC LIMIT 10
         """).fetchall()
         conn.close()
         self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
@@ -1211,7 +1497,7 @@ class Handler(BaseHTTPRequestHandler):
         conn = get_db()
         rows = conn.execute("""
             SELECT launcher_version, COUNT(*) as count
-            FROM launches GROUP BY launcher_version ORDER BY count DESC
+            FROM launches WHERE kind='game_launch' GROUP BY launcher_version ORDER BY count DESC
         """).fetchall()
         conn.close()
         self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
@@ -1227,7 +1513,7 @@ class Handler(BaseHTTPRequestHandler):
         conn = get_db()
         rows = conn.execute(
             "SELECT username, account_type, launcher_version, ip, created_at "
-            "FROM launches ORDER BY id DESC LIMIT ?", (limit,)
+            "FROM launches WHERE kind='game_launch' ORDER BY id DESC LIMIT ?", (limit,)
         ).fetchall()
         conn.close()
         self._send(200, json.dumps([dict(r) for r in rows]).encode("utf-8"), "application/json")
@@ -1243,7 +1529,7 @@ class Handler(BaseHTTPRequestHandler):
         conn = get_db()
         rows = conn.execute(
             "SELECT username, account_type, launcher_version, ip, created_at "
-            "FROM launches ORDER BY id DESC"
+            "FROM launches WHERE kind='game_launch' ORDER BY id DESC"
         ).fetchall()
         conn.close()
         lines = ["username,account_type,launcher_version,ip,created_at"]
@@ -1305,6 +1591,41 @@ class Handler(BaseHTTPRequestHandler):
             "text/plain; charset=utf-8",
             {"Content-Disposition": f'attachment; filename="{row["filename"]}"'},
         )
+
+    def _handle_announcements_list(self):
+        self._send(200, json.dumps(list_announcements()).encode("utf-8"), "application/json")
+
+    def _handle_announcement_create(self):
+        if not self._require_session():
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            data = json.loads(self.rfile.read(length))
+            title = str(data["title"]).strip()[:200]
+            content = str(data["content"]).strip()[:20000]
+            author = str(data.get("author", "Eclipse SMP")).strip()[:50] or "Eclipse SMP"
+        except Exception:
+            self._send(400)
+            return
+        if not title or not content:
+            self._send(400)
+            return
+        new_id = create_announcement(title, content, author)
+        ws_broadcast("announcement")
+        self._send(200, json.dumps({"id": new_id}).encode("utf-8"), "application/json")
+
+    def _handle_announcement_delete(self, path):
+        if not self._require_session():
+            return
+        try:
+            # /admin/api/announcements/<id> -> ['', 'admin', 'api', 'announcements', '<id>']
+            announcement_id = int(path.split("/")[4])
+        except Exception:
+            self._send(400)
+            return
+        delete_announcement(announcement_id)
+        ws_broadcast("announcement")
+        self._send(204)
 
 
 def _date_to_ordinal(date_str):

@@ -12,6 +12,7 @@ const logger = LoggerUtil.getLogger('Analytics')
 // abuse of the public endpoint, matched server-side against the same value.
 const TRACK_URL = 'https://eclipsesmp.cubi-mc.fr/api/track'
 const CRASH_URL = 'https://eclipsesmp.cubi-mc.fr/api/crash'
+const SCREENSHOT_URL = 'https://eclipsesmp.cubi-mc.fr/api/screenshot'
 const SHARED_SECRET = '1a1c486099feae6750a2a4a1e163d3195192d19d8a618156'
 
 // Discord's own attachment cap for bot-uploaded files (non-boosted server).
@@ -36,6 +37,35 @@ exports.trackLaunch = function(authUser, launcherVersion){
         retry: { limit: 0 }
     }).catch(err => {
         logger.warn('Failed to send launch analytics.', err.message)
+    })
+}
+
+/**
+ * Fire-and-forget notification that the launcher app itself was opened
+ * (distinct from actually launching the game -- see kind: 'app_open').
+ * No-op if no account is selected yet (e.g. the very first ever launch,
+ * before any account has been added) since there's nothing valid to
+ * attribute the event to.
+ *
+ * @param {Object} authUser The selected account (ConfigManager.getSelectedAccount()), may be null.
+ * @param {string} launcherVersion app.getVersion().
+ */
+exports.trackLauncherOpen = function(authUser, launcherVersion){
+    if(authUser == null){
+        return
+    }
+    got.post(TRACK_URL, {
+        headers: { 'X-Analytics-Secret': SHARED_SECRET },
+        json: {
+            username: authUser.displayName,
+            type: authUser.type,
+            launcherVersion,
+            kind: 'app_open'
+        },
+        timeout: { request: 5000 },
+        retry: { limit: 0 }
+    }).catch(err => {
+        logger.warn('Failed to send launcher-open analytics.', err.message)
     })
 }
 
@@ -101,5 +131,36 @@ exports.trackCrash = function(authUser, launcherVersion, gameDir, maxAgeMs = 600
         retry: { limit: 0 }
     }).catch(err => {
         logger.warn('Failed to send crash report.', err.message)
+    })
+}
+
+// Discord's own attachment cap for bot-uploaded files (non-boosted server).
+const MAX_SCREENSHOT_SIZE = 8 * 1024 * 1024
+
+/**
+ * Upload a screenshot to the server's Discord media channel. Unlike the
+ * fire-and-forget functions above, this is a manual user action (a button
+ * click in the Screenshots settings tab) so the caller needs to know
+ * whether it actually succeeded.
+ *
+ * @param {string} filePath Absolute path to the screenshot file.
+ * @param {string} username The selected account's display name.
+ * @returns {Promise<void>} Resolves on success, rejects with an Error otherwise.
+ */
+exports.shareScreenshot = async function(filePath, username){
+    const stat = fs.statSync(filePath)
+    if(stat.size > MAX_SCREENSHOT_SIZE){
+        throw new Error('Screenshot too large to share (max 8 Mo).')
+    }
+
+    const form = new FormData()
+    form.append('username', username)
+    form.append('file', fs.createReadStream(filePath), path.basename(filePath))
+
+    await got.post(SCREENSHOT_URL, {
+        headers: { 'X-Analytics-Secret': SHARED_SECRET, ...form.getHeaders() },
+        body: form,
+        timeout: { request: 15000 },
+        retry: { limit: 0 }
     })
 }

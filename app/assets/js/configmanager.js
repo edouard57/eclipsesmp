@@ -100,7 +100,8 @@ const DEFAULT_CONFIG = {
     selectedAccount: null,
     authenticationDatabase: {},
     modConfigurations: [],
-    javaConfig: {}
+    javaConfig: {},
+    playtime: {}
 }
 
 let config = null
@@ -174,7 +175,7 @@ function validateKeySet(srcObj, destObj){
     if(srcObj == null){
         srcObj = {}
     }
-    const validationBlacklist = ['authenticationDatabase', 'javaConfig']
+    const validationBlacklist = ['authenticationDatabase', 'javaConfig', 'playtime']
     const keys = Object.keys(srcObj)
     for(let i=0; i<keys.length; i++){
         if(typeof destObj[keys[i]] === 'undefined'){
@@ -831,4 +832,49 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
+}
+
+// Playtime Tracking
+
+/**
+ * Record a completed play session for an account.
+ *
+ * @param {string} uuid The account's UUID.
+ * @param {number} ms Session length in milliseconds.
+ */
+exports.addPlaytime = function(uuid, ms){
+    if(ms <= 0) {
+        return
+    }
+    if(config.playtime[uuid] == null){
+        config.playtime[uuid] = { totalMs: 0, sessions: [] }
+    }
+    config.playtime[uuid].totalMs += ms
+    config.playtime[uuid].sessions.push({ ts: Date.now(), ms })
+    // Bound file growth -- only the rolling window matters for the "this week" stat.
+    if(config.playtime[uuid].sessions.length > 500){
+        config.playtime[uuid].sessions = config.playtime[uuid].sessions.slice(-500)
+    }
+}
+
+/**
+ * @param {string} uuid The account's UUID.
+ * @returns {number} Total tracked playtime in milliseconds, all-time.
+ */
+exports.getPlaytimeTotal = function(uuid){
+    return config.playtime[uuid] != null ? config.playtime[uuid].totalMs : 0
+}
+
+/**
+ * @param {string} uuid The account's UUID.
+ * @param {number} sinceTs Only sum sessions that started at or after this timestamp.
+ * @returns {number} Tracked playtime in milliseconds since the given timestamp.
+ */
+exports.getPlaytimeSince = function(uuid, sinceTs){
+    if(config.playtime[uuid] == null){
+        return 0
+    }
+    return config.playtime[uuid].sessions
+        .filter(s => s.ts >= sinceTs)
+        .reduce((sum, s) => sum + s.ms, 0)
 }

@@ -3,6 +3,7 @@ const os     = require('os')
 const semver = require('semver')
 
 const DropinModUtil  = require('./assets/js/dropinmodutil')
+const ScreenshotManager = require('./assets/js/screenshotmanager')
 const { MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR } = require('./assets/js/ipcconstants')
 
 const settingsState = {
@@ -1068,6 +1069,37 @@ function bindShaderpackButton() {
     }
 }
 
+/**
+ * Bind the "add resource pack" button: clicking opens the resourcepacks
+ * folder in the OS file manager, dragging files onto it copies them in
+ * directly. Enabling a pack is done via Minecraft's own Options menu.
+ */
+function bindResourcePackButton() {
+    const rpBtn = document.getElementById('settingsResourcePackButton')
+    rpBtn.onclick = () => {
+        const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'resourcepacks')
+        DropinModUtil.validateDir(p)
+        shell.openPath(p)
+    }
+    rpBtn.ondragenter = e => {
+        e.dataTransfer.dropEffect = 'move'
+        rpBtn.setAttribute('drag', '')
+        e.preventDefault()
+    }
+    rpBtn.ondragover = e => {
+        e.preventDefault()
+    }
+    rpBtn.ondragleave = e => {
+        rpBtn.removeAttribute('drag')
+    }
+    rpBtn.ondrop = e => {
+        rpBtn.removeAttribute('drag')
+        e.preventDefault()
+
+        DropinModUtil.addResourcePacks(e.dataTransfer.files, CACHE_SETTINGS_INSTANCE_DIR)
+    }
+}
+
 // Server status bar functions.
 
 /**
@@ -1139,8 +1171,61 @@ async function prepareModsTab(first){
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
     bindShaderpackButton()
+    bindResourcePackButton()
     bindModsToggleSwitch()
     await loadSelectedServerOnModsTab()
+}
+
+/**
+ * Populate the Screenshots tab with thumbnails from the selected server's
+ * instance directory, each with a button to share it to the server's
+ * Discord media channel.
+ */
+function prepareScreenshotsTab(){
+    // This runs as part of the app's startup chain (prepareSettings(true),
+    // awaited by showMainUI before the landing view is ever shown) -- any
+    // uncaught error here would silently freeze the launcher on the splash
+    // screen forever, so this must never throw.
+    try {
+        const grid = document.getElementById('settingsScreenshotsGrid')
+        const empty = document.getElementById('settingsScreenshotsEmpty')
+        const serverId = ConfigManager.getSelectedServer()
+        if(serverId == null){
+            grid.innerHTML = ''
+            empty.style.display = 'block'
+            return
+        }
+
+        const screenshots = ScreenshotManager.scanForScreenshots(ConfigManager.getInstanceDirectory(), serverId)
+        empty.style.display = screenshots.length === 0 ? 'block' : 'none'
+        grid.innerHTML = screenshots.map((s, i) => `
+            <div class="settingsScreenshotCard">
+                <img class="settingsScreenshotThumb" src="file://${s.path}" alt="${s.name}">
+                <div class="settingsScreenshotMeta">
+                    <span class="settingsScreenshotDate">${new Date(s.mtime).toLocaleString()}</span>
+                    <button class="settingsScreenshotShareBtn" data-index="${i}">${Lang.queryJS('settings.screenshots.shareButton')}</button>
+                </div>
+            </div>
+        `).join('')
+
+        grid.querySelectorAll('.settingsScreenshotShareBtn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const s = screenshots[Number(btn.dataset.index)]
+                const authUser = ConfigManager.getSelectedAccount()
+                btn.disabled = true
+                btn.innerHTML = Lang.queryJS('settings.screenshots.sharing')
+                try {
+                    await Analytics.shareScreenshot(s.path, authUser != null ? authUser.displayName : 'Inconnu')
+                    btn.innerHTML = Lang.queryJS('settings.screenshots.shared')
+                } catch(err) {
+                    btn.innerHTML = Lang.queryJS('settings.screenshots.shareFailed')
+                    btn.disabled = false
+                }
+            })
+        })
+    } catch(err) {
+        console.error('Failed to populate Screenshots tab.', err)
+    }
 }
 
 /**
@@ -1581,6 +1666,7 @@ async function prepareSettings(first = false) {
     prepareAccountsTab()
     await prepareJavaTab()
     prepareAboutTab()
+    prepareScreenshotsTab()
 }
 
 // Prepare the settings UI on startup.

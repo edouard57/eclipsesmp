@@ -254,24 +254,34 @@
     "md5": "b4e14cae8115abcae97377260c65843f",
     "sha1": "e5d90b4f2cc508056097249d71fc9482ae73c111"
   },
-  "stackable": {
-    "project_id": "Bc74RbD1",
-    "version_number": "2.1.1",
-    "name": "[Fabric] Stackable 26.2+2.1.1",
-    "filename": "stackable-fabric-26.2-2.1.1.jar",
-    "url": "https://cdn.modrinth.com/data/Bc74RbD1/versions/ep4wVvFM/stackable-fabric-26.2-2.1.1.jar",
-    "size": 37267,
-    "md5": "a7112b8ba12f31fd537cea25a811a8e9",
-    "sha1": "d6e295d40764c467cba532dfef31ec83872ab316"
+  "cloth-config": {
+    "project_id": "9s6osm5g",
+    "version_number": "26.2.155+fabric",
+    "name": "Cloth Config API 26.2.155",
+    "filename": "cloth-config-26.2.155.jar",
+    "url": "https://cdn.modrinth.com/data/9s6osm5g/versions/Nv3xnWXd/cloth-config-26.2.155.jar",
+    "size": 1135186,
+    "md5": "776ec6f7bea662823c7acc7aa8b66c68",
+    "sha1": "babcf16dbd15e09d326e21ffe85ab3f7d843ef9e"
   },
-  "defixus": {
-    "project_id": "sCAhKklX",
-    "version_number": "1.0.5",
-    "name": "[Fabric 26.2] 1.0.5",
-    "filename": "defixus-1.0.5.jar",
-    "url": "https://cdn.modrinth.com/data/sCAhKklX/versions/gNSWLB0k/defixus-1.0.5.jar",
-    "size": 127384,
-    "md5": "963fd858f52b4bf8147058c7739b1d86",
-    "sha1": "71a589d0a960b5d2d0b1375407cfe1bf15b23fa8"
+  "more-culling": {
+    "project_id": "51shyZVL",
+    "version_number": "1.8.0",
+    "name": "More Culling 1.8.0 for Fabric 26.2",
+    "filename": "moreculling-fabric-26.2-1.8.0.jar",
+    "url": "https://cdn.modrinth.com/data/51shyZVL/versions/SYFaYeMK/moreculling-fabric-26.2-1.8.0.jar",
+    "size": 364530,
+    "md5": "13a4f77370856bff3bbc66f1b1c07f78",
+    "sha1": "6a2ae8fa02102f078657f02fd70b2d34c66ae898"
+  },
+  "scalablelux": {
+    "project_id": "Ps1zyz6x",
+    "version_number": "0.3.0-alpha.0.3+26.2",
+    "name": "ScalableLux 0.3.0-alpha.0.3 for Fabric 26.2",
+    "filename": "ScalableLux-fabric-0.3.0-alpha.0.3-all.jar",
+    "url": "https://cdn.modrinth.com/data/Ps1zyz6x/versions/EKLUURiy/ScalableLux-fabric-0.3.0-alpha.0.3-all.jar",
+    "size": 193030,
+    "md5": "c189fd70cb34d469438e8e8210deb861",
+    "sha1": "d3637cc2fe15761ca66070e5916f17c80f03ba51"
   }
 }

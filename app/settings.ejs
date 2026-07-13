@@ -9,6 +9,7 @@
                     <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected><%- lang('settings.navAccount') %></button>
                     <button class="settingsNavItem" rSc="settingsTabMinecraft"><%- lang('settings.navMinecraft') %></button>
                     <button class="settingsNavItem" rSc="settingsTabMods"><%- lang('settings.navMods') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabScreenshots"><%- lang('settings.navScreenshots') %></button>
                     <button class="settingsNavItem" rSc="settingsTabJava"><%- lang('settings.navJava') %></button>
                     <button class="settingsNavItem" rSc="settingsTabLauncher"><%- lang('settings.navLauncher') %></button>
                     <div class="settingsNavSpacer"></div>
@@ -165,7 +166,22 @@
                         </div>
                     </div>
                 </div>
+                <div id="settingsResourcePacksContainer">
+                    <div class="settingsModsHeader"><%- lang('settings.resourcePacks') %></div>
+                    <div id="settingsResourcePackDesc"><%- lang('settings.resourcePackDesc') %></div>
+                    <div id="settingsResourcePackWrapper">
+                        <button id="settingsResourcePackButton"><%- lang('settings.addResourcePack') %></button>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div id="settingsTabScreenshots" class="settingsTab" style="display: none;">
+            <div class="settingsTabHeader">
+                <span class="settingsTabHeaderText"><%- lang('settings.tabScreenshotsHeaderText') %></span>
+                <span class="settingsTabHeaderDesc"><%- lang('settings.tabScreenshotsHeaderDesc') %></span>
+            </div>
+            <div id="settingsScreenshotsGrid"></div>
+            <div id="settingsScreenshotsEmpty" style="display: none;"><%- lang('settings.screenshotsEmpty') %></div>
         </div>
         <div id="settingsTabJava" class="settingsTab" style="display: none;">
             <div class="settingsTabHeader">

@@ -328,6 +328,48 @@
                     }
                 },
                 {
+                    "id": "modrinth:scalablelux:0.3.0-alpha.0.3+26.2",
+                    "name": "[Confort] ScalableLux",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 193030,
+                        "MD5": "c189fd70cb34d469438e8e8210deb861",
+                        "url": "https://cdn.modrinth.com/data/Ps1zyz6x/versions/EKLUURiy/ScalableLux-fabric-0.3.0-alpha.0.3-all.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:cloth-config:26.2.155+fabric",
+                    "name": "Cloth Config API",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": true,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 1135186,
+                        "MD5": "776ec6f7bea662823c7acc7aa8b66c68",
+                        "url": "https://cdn.modrinth.com/data/9s6osm5g/versions/Nv3xnWXd/cloth-config-26.2.155.jar"
+                    }
+                },
+                {
+                    "id": "modrinth:more-culling:1.8.0",
+                    "name": "[Confort] More Culling",
+                    "type": "FabricMod",
+                    "required": {
+                        "value": false,
+                        "def": true
+                    },
+                    "artifact": {
+                        "size": 364530,
+                        "MD5": "13a4f77370856bff3bbc66f1b1c07f78",
+                        "url": "https://cdn.modrinth.com/data/51shyZVL/versions/SYFaYeMK/moreculling-fabric-26.2-1.8.0.jar"
+                    }
+                },
+                {
                     "id": "modrinth:yacl:3.9.5+26.2-fabric",
                     "name": "YetAnotherConfigLib",
                     "type": "FabricMod",
