@@ -263,5 +263,15 @@
     "size": 37267,
     "md5": "a7112b8ba12f31fd537cea25a811a8e9",
     "sha1": "d6e295d40764c467cba532dfef31ec83872ab316"
+  },
+  "defixus": {
+    "project_id": "sCAhKklX",
+    "version_number": "1.0.5",
+    "name": "[Fabric 26.2] 1.0.5",
+    "filename": "defixus-1.0.5.jar",
+    "url": "https://cdn.modrinth.com/data/sCAhKklX/versions/gNSWLB0k/defixus-1.0.5.jar",
+    "size": 127384,
+    "md5": "963fd858f52b4bf8147058c7739b1d86",
+    "sha1": "71a589d0a960b5d2d0b1375407cfe1bf15b23fa8"
   }
 }
