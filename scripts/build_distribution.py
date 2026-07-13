@@ -136,8 +136,8 @@ modules = [
     fabric_mod_module("immediatelyfast", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("appleskin", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("mouse-tweaks", tier_prefix="[Confort]", required=False, default=True),
-    fabric_mod_module("libipn", tier_prefix="[Confort]", required=False, default=True),
-    fabric_mod_module("inventory-profiles-next", tier_prefix="[Confort]", required=False, default=True),
+    fabric_mod_module("libipn", tier_prefix="[Confort]", required=False, default=False),
+    fabric_mod_module("inventory-profiles-next", tier_prefix="[Confort]", required=False, default=False),
     fabric_mod_module("jade", tier_prefix="[Confort]", required=False, default=True),
     fabric_mod_module("simple-voice-chat", tier_prefix="[Confort]", required=False, default=True),
     # Library required by Zoomify.
@@ -146,8 +146,8 @@ modules = [
     # --- Interface (minimap / carte / menu des mods, optionnel, actif par defaut) ---
     fabric_mod_module("xaeros-minimap", tier_prefix="[Interface]", required=False, default=True),
     fabric_mod_module("xaeros-world-map", tier_prefix="[Interface]", required=False, default=True),
-    fabric_mod_module("placeholder-api", tier_prefix="[Interface]", required=False, default=True),
-    fabric_mod_module("modmenu", tier_prefix="[Interface]", required=False, default=True),
+    fabric_mod_module("placeholder-api", tier_prefix="[Interface]", required=True),
+    fabric_mod_module("modmenu", tier_prefix="[Interface]", required=True),
     # --- Visuel (purement cosmetique, desactive par defaut car question de gout) ---
     fabric_mod_module("not-enough-animations", tier_prefix="[Visuel]", required=False, default=False),
     # --- PC puissant (optional, off by default: real CPU/GPU/RAM cost) ---

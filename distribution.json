@@ -277,7 +277,7 @@
                     "type": "FabricMod",
                     "required": {
                         "value": false,
-                        "def": true
+                        "def": false
                     },
                     "artifact": {
                         "size": 630245,
@@ -291,7 +291,7 @@
                     "type": "FabricMod",
                     "required": {
                         "value": false,
-                        "def": true
+                        "def": false
                     },
                     "artifact": {
                         "size": 1461780,
@@ -388,7 +388,7 @@
                     "name": "[Interface] Text Placeholder API",
                     "type": "FabricMod",
                     "required": {
-                        "value": false,
+                        "value": true,
                         "def": true
                     },
                     "artifact": {
@@ -402,7 +402,7 @@
                     "name": "[Interface] Mod Menu",
                     "type": "FabricMod",
                     "required": {
-                        "value": false,
+                        "value": true,
                         "def": true
                     },
                     "artifact": {
