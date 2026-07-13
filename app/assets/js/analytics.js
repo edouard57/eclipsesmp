@@ -1,4 +1,7 @@
+const fs = require('fs')
+const path = require('path')
 const got = require('got')
+const FormData = require('form-data')
 
 const { LoggerUtil } = require('helios-core')
 
@@ -8,7 +11,11 @@ const logger = LoggerUtil.getLogger('Analytics')
 // anyone can extract it from app.asar). It only deters casual/opportunistic
 // abuse of the public endpoint, matched server-side against the same value.
 const TRACK_URL = 'https://eclipsesmp.cubi-mc.fr/api/track'
+const CRASH_URL = 'https://eclipsesmp.cubi-mc.fr/api/crash'
 const SHARED_SECRET = '1a1c486099feae6750a2a4a1e163d3195192d19d8a618156'
+
+// Discord's own attachment cap for bot-uploaded files (non-boosted server).
+const MAX_CRASH_REPORT_SIZE = 8 * 1024 * 1024
 
 /**
  * Fire-and-forget notification that a player launched the game. Never
@@ -29,5 +36,70 @@ exports.trackLaunch = function(authUser, launcherVersion){
         retry: { limit: 0 }
     }).catch(err => {
         logger.warn('Failed to send launch analytics.', err.message)
+    })
+}
+
+/**
+ * Find the most recently modified crash report in gameDir/crash-reports,
+ * if any exist. Returns null if the folder is missing or empty.
+ *
+ * @param {string} gameDir The instance's game directory (ProcessBuilder#gameDir).
+ */
+function findLatestCrashReport(gameDir){
+    const crashDir = path.join(gameDir, 'crash-reports')
+    if(!fs.existsSync(crashDir)){
+        return null
+    }
+    const files = fs.readdirSync(crashDir)
+        .filter(f => f.endsWith('.txt'))
+        .map(f => {
+            const full = path.join(crashDir, f)
+            return { full, name: f, mtime: fs.statSync(full).mtimeMs }
+        })
+        .sort((a, b) => b.mtime - a.mtime)
+    return files.length > 0 ? files[0] : null
+}
+
+/**
+ * Fire-and-forget: if the game exited abnormally and a crash report was
+ * just written, upload it to the staff Discord channel. Only reports crash
+ * reports written within the last `maxAgeMs` (default 60s) so we don't
+ * re-send an old leftover report from a previous unrelated session.
+ *
+ * @param {Object} authUser The selected account.
+ * @param {string} launcherVersion app.getVersion().
+ * @param {string} gameDir ProcessBuilder#gameDir for this instance.
+ */
+exports.trackCrash = function(authUser, launcherVersion, gameDir, maxAgeMs = 60000){
+    let report
+    try {
+        report = findLatestCrashReport(gameDir)
+    } catch(err){
+        logger.warn('Failed to look up crash report.', err.message)
+        return
+    }
+    if(report == null || (Date.now() - report.mtime) > maxAgeMs){
+        return
+    }
+
+    const stat = fs.statSync(report.full)
+    if(stat.size > MAX_CRASH_REPORT_SIZE){
+        logger.warn('Crash report too large to upload, skipping.', report.full)
+        return
+    }
+
+    const form = new FormData()
+    form.append('username', authUser.displayName)
+    form.append('type', authUser.type)
+    form.append('launcherVersion', launcherVersion)
+    form.append('file', fs.createReadStream(report.full), report.name)
+
+    got.post(CRASH_URL, {
+        headers: { 'X-Analytics-Secret': SHARED_SECRET, ...form.getHeaders() },
+        body: form,
+        timeout: { request: 15000 },
+        retry: { limit: 0 }
+    }).catch(err => {
+        logger.warn('Failed to send crash report.', err.message)
     })
 }

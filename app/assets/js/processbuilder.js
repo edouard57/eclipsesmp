@@ -8,6 +8,7 @@ const { Type }              = require('helios-distribution-types')
 const os                    = require('os')
 const path                  = require('path')
 
+const Analytics                = require('./analytics')
 const ConfigManager            = require('./configmanager')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
@@ -99,6 +100,9 @@ class ProcessBuilder {
         })
         child.on('close', (code) => {
             logger.info('Exited with code', code)
+            if(code !== 0){
+                Analytics.trackCrash(this.authUser, this.launcherVersion, this.gameDir)
+            }
             fs.remove(tempNativePath, (err) => {
                 if(err){
                     logger.warn('Error while deleting temp dir', err)

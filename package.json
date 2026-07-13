@@ -29,6 +29,7 @@
     "ejs": "^3.1.10",
     "ejs-electron": "^3.0.0",
     "electron-updater": "^6.7.3",
+    "form-data": "^4.0.0",
     "fs-extra": "^11.3.3",
     "github-syntax-dark": "^0.5.0",
     "got": "^11.8.5",
