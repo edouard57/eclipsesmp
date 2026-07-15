@@ -103,6 +103,19 @@ function setLaunchEnabled(val){
 document.getElementById('launch_button').addEventListener('click', async e => {
     loggerLanding.info('Launching game..')
     try {
+        const selectedAccount = ConfigManager.getSelectedAccount()
+        if(selectedAccount != null){
+            const banStatus = await Analytics.checkBanStatus(selectedAccount.displayName)
+            if(banStatus.banned){
+                showLaunchFailure(
+                    'Compte banni',
+                    banStatus.reason
+                        ? `Ce compte a ete banni du launcher. Raison : ${banStatus.reason}`
+                        : 'Ce compte a ete banni du launcher.'
+                )
+                return
+            }
+        }
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
         if(jExe == null){

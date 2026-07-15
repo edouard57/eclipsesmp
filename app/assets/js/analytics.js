@@ -14,6 +14,7 @@ const TRACK_URL = 'https://eclipsesmp.cubi-mc.fr/api/track'
 const CRASH_URL = 'https://eclipsesmp.cubi-mc.fr/api/crash'
 const SCREENSHOT_URL = 'https://eclipsesmp.cubi-mc.fr/api/screenshot'
 const CUSTOMMODS_URL = 'https://eclipsesmp.cubi-mc.fr/api/custommods'
+const BANSTATUS_URL = 'https://eclipsesmp.cubi-mc.fr/api/banstatus'
 const SHARED_SECRET = '1a1c486099feae6750a2a4a1e163d3195192d19d8a618156'
 
 // Discord's own attachment cap for bot-uploaded files (non-boosted server).
@@ -96,6 +97,30 @@ exports.trackCustomMods = function(authUser, launcherVersion, mods){
     }).catch(err => {
         logger.warn('Failed to send custom mods report.', err.message)
     })
+}
+
+/**
+ * Check whether an account is remotely banned from launching the game
+ * (set via the Discord bot's /ban-launcher command). Fails open (not
+ * banned) on any network error so a transient outage never locks out a
+ * legitimate player -- the actual whitelist enforcement still happens
+ * server-side, this is just a courtesy block before wasting their time.
+ *
+ * @param {string} username The account's display name.
+ * @returns {Promise<{banned: boolean, reason: (string|null)}>}
+ */
+exports.checkBanStatus = async function(username){
+    try {
+        const res = await got.get(BANSTATUS_URL, {
+            searchParams: { username },
+            timeout: { request: 5000 },
+            retry: { limit: 0 }
+        }).json()
+        return { banned: !!res.banned, reason: res.reason || null }
+    } catch(err) {
+        logger.warn('Failed to check ban status, assuming not banned.', err.message)
+        return { banned: false, reason: null }
+    }
 }
 
 /**

@@ -12,6 +12,10 @@ Env vars required:
   DISCORD_CHANNEL_ID   Channel to post launch/crash events to
   STAFF_CHANNEL_ID     Channel to post custom-mod alerts to (defaults to
                         DISCORD_CHANNEL_ID if unset)
+  BOT_API_SECRET       Must match the X-Bot-Secret header sent by the
+                        Discord bot on /banlauncher. Kept separate from
+                        SHARED_SECRET since that one ships inside the
+                        public launcher app.
   SHARED_SECRET        Must match the X-Analytics-Secret header sent by the
                         launcher. This only deters casual abuse -- anyone
                         who extracts the launcher's app.asar can read it,
@@ -64,6 +68,10 @@ SCREENSHOT_CHANNEL_ID = os.environ.get("SCREENSHOT_CHANNEL_ID", DISCORD_CHANNEL_
 # back to the main channel if unset.
 STAFF_CHANNEL_ID = os.environ.get("STAFF_CHANNEL_ID", DISCORD_CHANNEL_ID)
 SHARED_SECRET = os.environ["SHARED_SECRET"]
+# Separate from SHARED_SECRET on purpose: SHARED_SECRET ships inside the
+# public launcher app (extractable by anyone), so it must never be enough
+# to ban/unban an account. Only the Discord bot holds this one.
+BOT_API_SECRET = os.environ["BOT_API_SECRET"]
 ADMIN_PASSWORD_HASH = os.environ["ADMIN_PASSWORD_HASH"]
 PORT = int(os.environ.get("PORT", "8081"))
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db")
@@ -172,6 +180,12 @@ def init_db():
             author TEXT NOT NULL,
             created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
         );
+        CREATE TABLE IF NOT EXISTS launcher_bans (
+            username TEXT PRIMARY KEY COLLATE NOCASE,
+            reason TEXT,
+            banned_by TEXT,
+            created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+        );
     """)
     # `kind` was added after the launches table already existed in production --
     # CREATE TABLE IF NOT EXISTS above is a no-op there, so migrate explicitly.
@@ -201,6 +215,37 @@ def record_crash(username, account_type, launcher_version, filename, content, ip
     )
     conn.commit()
     conn.close()
+
+
+def get_ban(username):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT username, reason, banned_by, created_at FROM launcher_bans WHERE username = ?",
+        (username,),
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def set_ban(username, reason, banned_by):
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO launcher_bans (username, reason, banned_by) VALUES (?, ?, ?) "
+        "ON CONFLICT(username) DO UPDATE SET reason = excluded.reason, banned_by = excluded.banned_by, "
+        "created_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')",
+        (username, reason, banned_by),
+    )
+    conn.commit()
+    conn.close()
+
+
+def remove_ban(username):
+    conn = get_db()
+    cur = conn.execute("DELETE FROM launcher_bans WHERE username = ?", (username,))
+    conn.commit()
+    removed = cur.rowcount > 0
+    conn.close()
+    return removed
 
 
 def list_announcements(limit=30):
@@ -1179,6 +1224,14 @@ class Handler(BaseHTTPRequestHandler):
         _last_seen[key] = now
         return True
 
+    def _check_bot_secret(self):
+        """Auth for /banlauncher -- separate from _check_common's SHARED_SECRET,
+        see the BOT_API_SECRET comment above for why."""
+        if self.headers.get("X-Bot-Secret") != BOT_API_SECRET:
+            self._send(401)
+            return False
+        return True
+
     def _session_token(self):
         cookie = self.headers.get("Cookie", "")
         for part in cookie.split(";"):
@@ -1238,6 +1291,13 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, json.dumps(status).encode("utf-8"), "application/json")
             return
 
+        if path == "/banstatus":
+            username = (self._query.get("username") or [""])[0]
+            ban = get_ban(username) if USERNAME_RE.match(username) else None
+            body = {"banned": ban is not None, "reason": ban["reason"] if ban else None}
+            self._send(200, json.dumps(body).encode("utf-8"), "application/json")
+            return
+
         if path == "/news.xml":
             self._send(200, render_news_rss().encode("utf-8"), "application/rss+xml; charset=utf-8")
             return
@@ -1288,6 +1348,8 @@ class Handler(BaseHTTPRequestHandler):
             self._handle_screenshot()
         elif self.path == "/custommods":
             self._handle_custom_mods()
+        elif self.path == "/banlauncher":
+            self._handle_ban_launcher()
         elif self.path == "/admin/api/login":
             self._handle_login()
         elif self.path == "/admin/api/logout":
@@ -1402,6 +1464,35 @@ class Handler(BaseHTTPRequestHandler):
             print(f"Failed to post custom mods to Discord: {e}", flush=True)
 
         self._send(204)
+
+    def _handle_ban_launcher(self):
+        if not self._check_bot_secret():
+            return
+
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            data = json.loads(self.rfile.read(length))
+            username = data["username"]
+            action = data["action"]
+        except Exception:
+            self._send(400)
+            return
+
+        if not USERNAME_RE.match(username) or action not in ("ban", "unban"):
+            self._send(400)
+            return
+
+        if action == "ban":
+            reason = str(data.get("reason", ""))[:200] or None
+            moderator = str(data.get("moderator", "?"))[:100]
+            set_ban(username, reason, moderator)
+            self._send(200, json.dumps({"ok": True}).encode("utf-8"), "application/json")
+        else:
+            removed = remove_ban(username)
+            if not removed:
+                self._send(404)
+                return
+            self._send(200, json.dumps({"ok": True}).encode("utf-8"), "application/json")
 
     def _handle_crash(self):
         length = int(self.headers.get("Content-Length", "0"))
