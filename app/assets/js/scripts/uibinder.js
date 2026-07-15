@@ -9,6 +9,7 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
+const DropinModUtil = require('./assets/js/dropinmodutil')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -57,6 +58,24 @@ function getCurrentView(){
     return currentView
 }
 
+/**
+ * Scan the selected server's mods folder for drop-in (manually installed,
+ * not part of the official distribution) mods and alert staff on Discord
+ * if any are enabled. Runs every time the launcher itself opens, not just
+ * when the game is launched.
+ *
+ * @param {Object} serv The selected server, may be null (e.g. no distro yet).
+ */
+function reportCustomMods(serv){
+    if(serv == null){
+        return
+    }
+    const modsDir = path.join(ConfigManager.getInstanceDirectory(), serv.rawServer.id, 'mods')
+    const dropins = DropinModUtil.scanForDropinMods(modsDir, serv.rawServer.minecraftVersion)
+    const enabledNames = dropins.filter(m => !m.disabled).map(m => m.name)
+    Analytics.trackCustomMods(ConfigManager.getSelectedAccount(), remote.app.getVersion(), enabledNames)
+}
+
 async function showMainUI(data){
 
     if(!isDev){
@@ -65,9 +84,11 @@ async function showMainUI(data){
     }
 
     await prepareSettings(true)
-    updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
+    const selectedServer = data.getServerById(ConfigManager.getSelectedServer())
+    updateSelectedServer(selectedServer)
     refreshServerStatus()
     Analytics.trackLauncherOpen(ConfigManager.getSelectedAccount(), remote.app.getVersion())
+    reportCustomMods(selectedServer)
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
         document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`

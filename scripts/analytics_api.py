@@ -2,7 +2,7 @@
 """Tiny HTTP API that forwards launcher usage events to a Discord channel,
 stores them in SQLite, and serves a session-authenticated admin dashboard
 at /admin (see eclipsesmp.cubi-mc.fr's nginx config -- nginx just proxies
-/admin and /api/{track,crash} through, auth is handled here).
+/admin and /api/{track,crash,screenshot,custommods} through, auth is handled here).
 
 Configured entirely via environment variables (see start.sh on the VPS) so
 no secret ever needs to live in this file or in git.
@@ -10,6 +10,8 @@ no secret ever needs to live in this file or in git.
 Env vars required:
   DISCORD_TOKEN        Bot token, "Authorization: Bot <token>"
   DISCORD_CHANNEL_ID   Channel to post launch/crash events to
+  STAFF_CHANNEL_ID     Channel to post custom-mod alerts to (defaults to
+                        DISCORD_CHANNEL_ID if unset)
   SHARED_SECRET        Must match the X-Analytics-Secret header sent by the
                         launcher. This only deters casual abuse -- anyone
                         who extracts the launcher's app.asar can read it,
@@ -58,6 +60,9 @@ DISCORD_CHANNEL_ID = os.environ["DISCORD_CHANNEL_ID"]
 # Where player-shared screenshots are posted ("Media" channel) -- falls back
 # to the main channel if unset so this doesn't hard-crash an old deployment.
 SCREENSHOT_CHANNEL_ID = os.environ.get("SCREENSHOT_CHANNEL_ID", DISCORD_CHANNEL_ID)
+# Where custom (drop-in) mod alerts are posted for staff review -- falls
+# back to the main channel if unset.
+STAFF_CHANNEL_ID = os.environ.get("STAFF_CHANNEL_ID", DISCORD_CHANNEL_ID)
 SHARED_SECRET = os.environ["SHARED_SECRET"]
 ADMIN_PASSWORD_HASH = os.environ["ADMIN_PASSWORD_HASH"]
 PORT = int(os.environ.get("PORT", "8081"))
@@ -291,6 +296,19 @@ def post_launch(username, account_type, launcher_version, kind="game_launch"):
     # instead of rejecting outright. Raw UTF-8 bytes work correctly.
     body = json.dumps({"content": content}, ensure_ascii=False).encode("utf-8")
     discord_request(f"/channels/{DISCORD_CHANNEL_ID}/messages", body, "application/json")
+
+
+def post_custom_mods(username, account_type, launcher_version, mods):
+    label = ACCOUNT_TYPES.get(account_type, account_type)
+    mods_list = "\n".join(f"- {m}" for m in mods)
+    content = (
+        f"**{username}** a des mods custom installes -- `{label}` -- launcher v{launcher_version}\n"
+        f"{mods_list}"
+    )
+    if len(content) > 1900:
+        content = content[:1900] + "\n... (troncque)"
+    body = json.dumps({"content": content}, ensure_ascii=False).encode("utf-8")
+    discord_request(f"/channels/{STAFF_CHANNEL_ID}/messages", body, "application/json")
 
 
 def post_crash(username, account_type, launcher_version, filename, file_bytes):
@@ -1268,6 +1286,8 @@ class Handler(BaseHTTPRequestHandler):
             self._handle_crash()
         elif self.path == "/screenshot":
             self._handle_screenshot()
+        elif self.path == "/custommods":
+            self._handle_custom_mods()
         elif self.path == "/admin/api/login":
             self._handle_login()
         elif self.path == "/admin/api/logout":
@@ -1350,6 +1370,36 @@ class Handler(BaseHTTPRequestHandler):
             post_launch(username, account_type, launcher_version, kind)
         except Exception as e:
             print(f"Failed to post launch to Discord: {e}", flush=True)
+
+        self._send(204)
+
+    def _handle_custom_mods(self):
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            data = json.loads(self.rfile.read(length))
+            username = data["username"]
+            account_type = data["type"]
+            launcher_version = str(data.get("launcherVersion", "?"))[:20]
+            mods = data.get("mods", [])
+        except Exception:
+            self._send(400)
+            return
+
+        if not self._check_common():
+            return
+
+        if not USERNAME_RE.match(username) or account_type not in ACCOUNT_TYPES:
+            self._send(400)
+            return
+        if not isinstance(mods, list) or not mods:
+            self._send(400)
+            return
+        mods = [str(m)[:100] for m in mods[:50]]
+
+        try:
+            post_custom_mods(username, account_type, launcher_version, mods)
+        except Exception as e:
+            print(f"Failed to post custom mods to Discord: {e}", flush=True)
 
         self._send(204)
 

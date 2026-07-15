@@ -13,6 +13,7 @@ const logger = LoggerUtil.getLogger('Analytics')
 const TRACK_URL = 'https://eclipsesmp.cubi-mc.fr/api/track'
 const CRASH_URL = 'https://eclipsesmp.cubi-mc.fr/api/crash'
 const SCREENSHOT_URL = 'https://eclipsesmp.cubi-mc.fr/api/screenshot'
+const CUSTOMMODS_URL = 'https://eclipsesmp.cubi-mc.fr/api/custommods'
 const SHARED_SECRET = '1a1c486099feae6750a2a4a1e163d3195192d19d8a618156'
 
 // Discord's own attachment cap for bot-uploaded files (non-boosted server).
@@ -66,6 +67,34 @@ exports.trackLauncherOpen = function(authUser, launcherVersion){
         retry: { limit: 0 }
     }).catch(err => {
         logger.warn('Failed to send launcher-open analytics.', err.message)
+    })
+}
+
+/**
+ * Fire-and-forget notification to staff that a player has custom (drop-in)
+ * mods installed alongside the official modpack. No-op if no account is
+ * selected yet or the mod list is empty.
+ *
+ * @param {Object} authUser The selected account (ConfigManager.getSelectedAccount()), may be null.
+ * @param {string} launcherVersion app.getVersion().
+ * @param {string[]} mods Names of the enabled drop-in mods found.
+ */
+exports.trackCustomMods = function(authUser, launcherVersion, mods){
+    if(authUser == null || mods == null || mods.length === 0){
+        return
+    }
+    got.post(CUSTOMMODS_URL, {
+        headers: { 'X-Analytics-Secret': SHARED_SECRET },
+        json: {
+            username: authUser.displayName,
+            type: authUser.type,
+            launcherVersion,
+            mods
+        },
+        timeout: { request: 5000 },
+        retry: { limit: 0 }
+    }).catch(err => {
+        logger.warn('Failed to send custom mods report.', err.message)
     })
 }
 
