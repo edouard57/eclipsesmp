@@ -9,7 +9,9 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
-const DropinModUtil = require('./assets/js/dropinmodutil')
+// DropinModUtil is required by settings.js, which shares this top-level
+// scope (classic <script> tags, not modules) -- requiring it again here
+// would be a duplicate `const` declaration and a hard SyntaxError.
 
 let rscShouldLoad = false
 let fatalStartupError = false
